@@ -292,22 +292,24 @@ export type CustomEventHandlerType = EventHandler<
 export interface FieldPropTypes {
   required: boolean;
   hasTooltip?: boolean;
-  tooltipText?: (value: any) => string;
+  tooltipText?: (value: unknown) => string;
   placeholder?: string;
   onParametersChange: (event: CustomParametersChangeType) => void;
-  onParametersUploadFileChange: (value: any) => string;
+  onParametersUploadFileChange: DatabaseConnectionFormProps['onParametersUploadFileChange'];
   changeMethods: {
     onParametersChange: (event: CustomParametersChangeType) => void;
   } & {
-    onChange: (value: any) => string;
+    onChange: DatabaseConnectionFormProps['onChange'];
   } & {
-    onQueryChange: (value: any) => string;
-  } & { onParametersUploadFileChange: (value: any) => string } & {
+    onQueryChange: DatabaseConnectionFormProps['onQueryChange'];
+  } & {
+    onParametersUploadFileChange: DatabaseConnectionFormProps['onParametersUploadFileChange'];
+  } & {
     onAddTableCatalog: () => void;
     onRemoveTableCatalog: (idx: number) => void;
   } & {
-    onExtraInputChange: (value: any) => void;
-    onEncryptedExtraInputChange: (value: any) => void;
+    onExtraInputChange: DatabaseConnectionFormProps['onExtraInputChange'];
+    onEncryptedExtraInputChange: DatabaseConnectionFormProps['onEncryptedExtraInputChange'];
     onClearEncryptedExtraKey: (name: string) => void;
     onSSHTunnelParametersChange: CustomEventHandlerType;
   };
@@ -317,7 +319,7 @@ export interface FieldPropTypes {
   db?: DatabaseObject;
   dbModel?: DatabaseForm;
   field: string;
-  default_value?: any;
+  default_value?: unknown;
   description?: string;
   isEditMode?: boolean;
   sslForced?: boolean;

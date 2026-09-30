@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { t } from '@apache-superset/core/translation';
 import { Input, Collapse, Form, FormItem } from '@superset-ui/core/components';
 import {
@@ -48,6 +48,11 @@ export const OAuth2ClientField = ({
   default_value: defaultValue,
   isPublic = true,
 }: FieldPropTypes) => {
+  const defaults =
+    defaultValue && typeof defaultValue === 'object'
+      ? (defaultValue as Partial<OAuth2ClientInfo>)
+      : undefined;
+
   const deriveOauth2ClientInfo = (): OAuth2ClientInfo => {
     // `masked_encrypted_extra` is user/backend-supplied and historically
     // sometimes the string "null" — JSON.parse('null') returns null, and
@@ -72,11 +77,11 @@ export const OAuth2ClientField = ({
       secret: info?.secret || '',
       authorization_request_uri:
         info?.authorization_request_uri ||
-        defaultValue?.authorization_request_uri ||
+        defaults?.authorization_request_uri ||
         '',
       token_request_uri:
-        info?.token_request_uri || defaultValue?.token_request_uri || '',
-      scope: info?.scope || defaultValue?.scope || '',
+        info?.token_request_uri || defaults?.token_request_uri || '',
+      scope: info?.scope || defaults?.scope || '',
     };
   };
 
@@ -97,23 +102,24 @@ export const OAuth2ClientField = ({
     return null;
   }
 
-  const handleChange = (key: any) => (e: any) => {
-    const updatedInfo = {
-      ...oauth2ClientInfo,
-      [key]: e.target.value,
-    };
+  const handleChange =
+    (key: keyof OAuth2ClientInfo) => (e: ChangeEvent<HTMLInputElement>) => {
+      const updatedInfo = {
+        ...oauth2ClientInfo,
+        [key]: e.target.value,
+      };
 
-    setOauth2ClientInfo(updatedInfo);
+      setOauth2ClientInfo(updatedInfo);
 
-    const event: CustomParametersChangeType = {
-      target: {
-        type: 'object',
-        name: 'oauth2_client_info',
-        value: updatedInfo,
-      },
+      const event: CustomParametersChangeType = {
+        target: {
+          type: 'object',
+          name: 'oauth2_client_info',
+          value: updatedInfo,
+        },
+      };
+      changeMethods.onParametersChange(event);
     };
-    changeMethods.onParametersChange(event);
-  };
 
   return (
     <Collapse

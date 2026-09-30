@@ -18,7 +18,7 @@
  */
 
 import { FC, ReactNode } from 'react';
-import { InfoTooltip } from '@superset-ui/core/components';
+import { FormItemProps, InfoTooltip } from '@superset-ui/core/components';
 import { StyledFormItem } from './styles';
 
 interface StyledFormItemWithTipProps {
@@ -26,7 +26,7 @@ interface StyledFormItemWithTipProps {
   tip: string;
   name: string;
   children: ReactNode;
-  rules?: any[];
+  rules?: FormItemProps['rules'];
 }
 
 const StyledFormItemWithTip: FC<StyledFormItemWithTipProps> = ({

@@ -174,7 +174,7 @@ const extensionsToLabel: Record<UploadType, string> = {
 };
 
 export const validateUploadFileExtension = (
-  file: UploadFile<any>,
+  file: UploadFile,
   allowedExtensions: string[],
 ) => {
   const extensionMatch = file.name.match(/.+\.([^.]+)$/);
@@ -559,7 +559,7 @@ const UploadDataModal: FunctionComponent<UploadDataModalProps> = ({
     }
   }, [show]);
 
-  const validateUpload = (_: any, _value: string) => {
+  const validateUpload = (_: unknown, _value: string) => {
     if (fileList.length === 0) {
       return Promise.reject(t('Uploading a file is required'));
     }
@@ -575,7 +575,7 @@ const UploadDataModal: FunctionComponent<UploadDataModalProps> = ({
   };
 
   const validateDatabase = (
-    _: any,
+    _: unknown,
     value: { value: number; label: string } | null | undefined,
   ) => {
     if (!value?.value) {
