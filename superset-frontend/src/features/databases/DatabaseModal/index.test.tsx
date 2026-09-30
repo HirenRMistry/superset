@@ -31,7 +31,7 @@ import {
 import { getExtensionsRegistry } from '@superset-ui/core';
 import setupCodeOverrides from 'src/setup/setupCodeOverrides';
 import * as hooks from 'src/views/CRUD/hooks';
-import { DatabaseObject, ConfigurationMethod } from '../types';
+import { DatabaseObject, ConfigurationMethod, CustomTextType } from '../types';
 import DatabaseModal, {
   dbReducer,
   DBReducerActionType,
@@ -1971,7 +1971,10 @@ test('handleChangeWithValidation function clears validation errors when called',
   });
 
   // Test the handleChangeWithValidation function behavior
-  const handleChangeWithValidation = (actionType: any, payload: any) => {
+  const handleChangeWithValidation = (
+    actionType: string,
+    payload: CustomTextType,
+  ) => {
     mockOnChange(actionType, payload);
     handleClearValidationErrors();
   };
@@ -2006,7 +2009,10 @@ test('validates fix by testing all form field types clear validation errors', ()
     mockClearError();
   };
 
-  const handleChangeWithValidation = (_actionType: any, _payload: any) => {
+  const handleChangeWithValidation = (
+    _actionType: string,
+    _payload: CustomTextType,
+  ) => {
     handleClearValidationErrors();
   };
 
