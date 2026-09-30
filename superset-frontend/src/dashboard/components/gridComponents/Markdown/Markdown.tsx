@@ -164,6 +164,7 @@ function Markdown({
   const [hasError, setHasError] = useState(false);
 
   const renderStartTimeRef = useRef(Logger.getTimestamp());
+  const hasLoggedRenderRef = useRef(false);
   const prevUndoLengthRef = useRef(undoLength);
   const prevRedoLengthRef = useRef(redoLength);
   const prevComponentWidthRef = useRef(component.meta.width);
@@ -195,17 +196,19 @@ function Markdown({
     }
   }, [isUndoRedo, component.meta.code, hasError, editorMode, markdownSource]);
 
-  // componentDidMount equivalent: log render event
+  // Log the initial render event once
   useEffect(() => {
+    if (hasLoggedRenderRef.current) {
+      return;
+    }
+    hasLoggedRenderRef.current = true;
     logEvent(LOG_ACTIONS_RENDER_CHART, {
       viz_type: 'markdown',
       start_offset: renderStartTimeRef.current,
       ts: new Date().getTime(),
       duration: Logger.getTimestamp() - renderStartTimeRef.current,
     });
-    // Only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [logEvent]);
 
   // componentDidUpdate equivalent: resize editor when width changes
   useEffect(() => {

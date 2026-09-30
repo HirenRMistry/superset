@@ -285,13 +285,12 @@ const Chart = (props: ChartProps) => {
   const handleDownloadComplete = useCallback(() => {
     boundActionCreators.addSuccessToast(t('CSV file downloaded successfully'));
   }, [boundActionCreators]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
-  const resize = useCallback(
-    debounce(() => {
-      const { width, height } = props;
-      setHeight(height);
-      setWidth(width);
-    }, RESIZE_TIMEOUT),
+  const resize = useMemo(
+    () =>
+      debounce(() => {
+        setHeight(props.height);
+        setWidth(props.width);
+      }, RESIZE_TIMEOUT),
     [props.width, props.height],
   );
 
@@ -305,7 +304,7 @@ const Chart = (props: ChartProps) => {
       });
       boundActionCreators.changeFilter(chart?.id, { [col]: vals }, merge);
     },
-    [boundActionCreators.logEvent, boundActionCreators.changeFilter, chart?.id],
+    [boundActionCreators, chart?.id],
   );
 
   // Chart state handler for stateful charts
@@ -412,14 +411,14 @@ const Chart = (props: ChartProps) => {
     (chartId: number, column: string) => {
       boundActionCreators.setFocusedFilterField(chartId, column);
     },
-    [boundActionCreators.setFocusedFilterField],
+    [boundActionCreators],
   );
 
   const handleFilterMenuClose = useCallback(
     (chartId: number, column: string) => {
       boundActionCreators.unsetFocusedFilterField(chartId, column);
     },
-    [boundActionCreators.unsetFocusedFilterField],
+    [boundActionCreators],
   );
 
   const logExploreChart = useCallback(() => {
@@ -427,7 +426,7 @@ const Chart = (props: ChartProps) => {
       slice_id: sliceSliceId,
       is_cached: isCached,
     });
-  }, [boundActionCreators.logEvent, sliceSliceId, isCached]);
+  }, [boundActionCreators, sliceSliceId, isCached]);
 
   const chartConfiguration = useSelector(
     (state: RootState) => state.dashboardInfo.metadata?.chart_configuration,
@@ -594,8 +593,7 @@ const Chart = (props: ChartProps) => {
         );
         filename = `${safeChartName}${timestamp}.csv`;
       }
-      const baseOwnState =
-        (dataMask[props.id]?.ownState as Record<string, unknown>) || {};
+      const baseOwnState = (dataMaskOwnState as Record<string, unknown>) || {};
       const state = getChartStateWithFallback(
         chartState as { state?: JsonObject } | undefined,
         formData,
@@ -661,13 +659,11 @@ const Chart = (props: ChartProps) => {
       maxRows,
       dataMaskOwnState,
       chartState,
-      props.id,
-      boundActionCreators.logEvent,
-      boundActionCreators.addDangerToast,
+      boundActionCreators,
       queriesResponse,
       startExport,
-      resetExport,
       streamingThreshold,
+      sliceSliceName,
     ],
   );
 
@@ -702,12 +698,12 @@ const Chart = (props: ChartProps) => {
       props.dashboardId,
     );
   }, [
-    boundActionCreators.refreshChart,
+    boundActionCreators,
     chart?.id,
+    props.id,
     props.dashboardId,
     sliceSliceId,
     isCached,
-    boundActionCreators.logEvent,
   ]);
 
   if (!chart || (slice as unknown) === EMPTY_OBJECT) {

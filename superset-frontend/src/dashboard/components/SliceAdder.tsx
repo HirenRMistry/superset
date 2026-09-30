@@ -302,13 +302,6 @@ function SliceAdder({
     userIdForFetchRef.current = userIdForFetch;
   }, [userIdForFetch]);
 
-  // componentDidMount
-  useEffect(() => {
-    slicesRequestRef.current = fetchSlices(userIdForFetch(), '', sortBy);
-    // Only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Update selectedSliceIdsSet when selectedSliceIds prop changes
   useEffect(() => {
     setSelectedSliceIdsSet(new Set(selectedSliceIds));
@@ -339,6 +332,15 @@ function SliceAdder({
   useEffect(() => {
     fetchSlicesRef.current = fetchSlices;
   }, [fetchSlices]);
+
+  // componentDidMount
+  useEffect(() => {
+    slicesRequestRef.current = fetchSlicesRef.current(
+      userIdForFetchRef.current(),
+      '',
+      sortByRef.current,
+    );
+  }, []);
 
   // Create the debounce once (stable identity) so a pending search isn't
   // dropped when sortBy/userIdForFetch change mid-typing. The debounced

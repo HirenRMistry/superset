@@ -24,6 +24,7 @@ import { Loading } from '@superset-ui/core/components';
 import { PluginContext } from 'src/components';
 import type { PluginContextType } from 'src/components/DynamicPlugins/types';
 import getBootstrapData from 'src/utils/getBootstrapData';
+import useEffectEvent from 'src/hooks/useEffectEvent';
 import type {
   Slice,
   ActiveFilters,
@@ -278,8 +279,7 @@ function Dashboard({
     actionsRef.current = actions;
   });
 
-  // componentDidMount equivalent
-  useEffect(() => {
+  const logMountEvent = useEffectEvent(() => {
     const bootstrapData = getBootstrapData();
     const eventData: Record<string, unknown> = {
       is_soft_navigation: Logger.timeOriginOffset > 0,
@@ -294,6 +294,11 @@ function Dashboard({
       eventData.target_id = directLinkComponentId;
     }
     actions.logEvent(LOG_ACTIONS_MOUNT_DASHBOARD, eventData);
+  });
+
+  // componentDidMount equivalent
+  useEffect(() => {
+    logMountEvent();
 
     // Handle browser tab visibility change
     if (document.visibilityState === 'hidden') {
@@ -312,9 +317,6 @@ function Dashboard({
       actionsRef.current.clearDataMaskState();
       actionsRef.current.clearAllChartStates();
     };
-    // Only run on mount/unmount - listeners/cleanup go through refs to avoid
-    // capturing stale closures.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Apply charts on every render (like componentDidMount + componentDidUpdate calling applyCharts)

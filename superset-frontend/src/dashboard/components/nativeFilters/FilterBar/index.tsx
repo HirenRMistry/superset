@@ -362,7 +362,13 @@ const FilterBar: FC<FiltersBarProps> = ({
         setDataMaskSelected(draft => ({ ...draft, ...updates }));
       }
     }
-  }, [dashboardId, filters, previousDashboardId, setDataMaskSelected]);
+  }, [
+    dashboardId,
+    filters,
+    previousDashboardId,
+    previousFilters,
+    setDataMaskSelected,
+  ]);
 
   const dataMaskAppliedText = JSON.stringify(dataMaskApplied);
   const prevDataMaskAppliedRef = useRef(dataMaskApplied);
@@ -412,10 +418,22 @@ const FilterBar: FC<FiltersBarProps> = ({
   useEffect(() => {
     // embedded users can't persist filter combinations
     if (user?.userId) {
-      publishDataMask(history, dashboardId, updateKey, dataMaskApplied, tabId);
+      publishDataMask(
+        history,
+        dashboardId,
+        updateKey,
+        JSON.parse(dataMaskAppliedText) as DataMaskStateWithId,
+        tabId,
+      );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardId, dataMaskAppliedText, history, updateKey, tabId]);
+  }, [
+    dashboardId,
+    dataMaskAppliedText,
+    history,
+    updateKey,
+    tabId,
+    user?.userId,
+  ]);
 
   const pendingChartCustomizations = useSelector<
     RootState,

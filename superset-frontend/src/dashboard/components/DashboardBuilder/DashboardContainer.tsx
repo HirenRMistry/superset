@@ -308,13 +308,25 @@ const DashboardContainer: FC<DashboardContainerProps> = ({ topLevelTabs }) => {
       // apply labels color as dictated by stored metadata (if any)
       setColorInitializedDashboardId(dashboardInfo.id);
     }
+  }, [
+    dashboardInfo?.id,
+    dashboardInfo.metadata,
+    dashboardLabelsColorInitiated,
+    dispatch,
+  ]);
 
-    return () => {
-      onBeforeUnload();
-    };
+  const onBeforeUnloadRef = useRef(onBeforeUnload);
+  useEffect(() => {
+    onBeforeUnloadRef.current = onBeforeUnload;
+  }, [onBeforeUnload]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardInfo?.id, dispatch]);
+  // Persist and reset label colors when leaving the dashboard
+  useEffect(
+    () => () => {
+      onBeforeUnloadRef.current();
+    },
+    [dashboardInfo?.id],
+  );
 
   useEffect(() => {
     // 'beforeunload' event interferes with Cypress data cleanup process.

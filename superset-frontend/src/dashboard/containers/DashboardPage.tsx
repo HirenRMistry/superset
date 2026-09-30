@@ -43,6 +43,7 @@ import { getActiveFilters } from 'src/dashboard/util/activeDashboardFilters';
 import { LocalStorageKeys, setItem } from 'src/utils/localStorageHelpers';
 import { URL_PARAMS } from 'src/constants';
 import { getUrlParam } from 'src/utils/urlUtils';
+import useEffectEvent from 'src/hooks/useEffectEvent';
 import { sanitizeDocumentTitle } from 'src/utils/sanitizeDocumentTitle';
 import { setDatasetsStatus } from 'src/dashboard/actions/dashboardState';
 import { DASHBOARD_HEADER_ID } from 'src/dashboard/util/constants';
@@ -205,7 +206,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
     dispatch(setDatasetsStatus(status));
   }, [dispatch, status]);
 
-  useEffect(() => {
+  const loadDataMaskAndHydrate = useEffectEvent(() => {
     // eslint-disable-next-line consistent-return
     async function getDataMaskApplied() {
       const permalinkKey = getUrlParam(URL_PARAMS.permalinkKey);
@@ -335,7 +336,10 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
       return null;
     }
     if (id) getDataMaskApplied();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+
+  useEffect(() => {
+    loadDataMaskAndHydrate();
   }, [readyToRender]);
 
   // Capture original title before any effects run

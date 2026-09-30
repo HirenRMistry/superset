@@ -16,13 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  useState,
-  useCallback,
-  useMemo,
-  ChangeEvent,
-  type ReactElement,
-} from 'react';
+import { useState, useCallback, ChangeEvent, type ReactElement } from 'react';
 import cx from 'classnames';
 import { Button, Input } from '@superset-ui/core/components';
 import { t } from '@apache-superset/core/translation';
@@ -479,11 +473,8 @@ export default function FilterScopeSelector({
   setUnsavedChanges,
   onCloseModal,
 }: FilterScopeSelectorProps): ReactElement {
-  const initialized = useMemo(
-    () => initializeState(dashboardFilters, layout),
-    // Only initialize once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+  const [initialized] = useState(() =>
+    initializeState(dashboardFilters, layout),
   );
 
   const { showSelector, allFilterFields } = initialized;
