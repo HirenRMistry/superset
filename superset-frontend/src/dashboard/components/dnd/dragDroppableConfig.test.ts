@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+import {
+  DragSourceConnector,
+  DragSourceMonitor,
+  DropTargetConnector,
+  DropTargetMonitor,
+} from 'react-dnd';
 import { CHART_TYPE, ROW_TYPE } from '../../util/componentTypes';
 import type {
   DragDroppableComponent,
@@ -84,7 +89,7 @@ function makeDragConnect() {
   return {
     dragSource: jest.fn(() => 'drag-source-ref'),
     dragPreview: jest.fn(() => 'drag-preview-ref'),
-  };
+  } as unknown as DragSourceConnector;
 }
 
 function makeDragMonitor(
@@ -242,7 +247,7 @@ test('dragStateToProps reports isDragging and the dragged component identity fro
 test('dropStateToProps reports isDraggingOver from the monitor', () => {
   const connect = {
     dropTarget: jest.fn(() => 'drop-target-ref'),
-  };
+  } as unknown as DropTargetConnector;
   const monitor = {
     isOver: jest.fn((opts?: { shallow?: boolean }) => !opts?.shallow),
   } as unknown as DropTargetMonitor;

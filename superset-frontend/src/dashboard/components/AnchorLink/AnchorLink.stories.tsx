@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ComponentProps } from 'react';
 import AnchorLink from '.';
 
 export default {
@@ -23,9 +24,9 @@ export default {
   component: AnchorLink,
 };
 
-export const InteractiveAnchorLink = (args: any) => (
-  <AnchorLink id="link" {...args} />
-);
+export const InteractiveAnchorLink = (
+  args: Partial<ComponentProps<typeof AnchorLink>>,
+) => <AnchorLink id="link" {...args} />;
 
 const PLACEMENTS = ['right', 'left', 'top', 'bottom'];
 

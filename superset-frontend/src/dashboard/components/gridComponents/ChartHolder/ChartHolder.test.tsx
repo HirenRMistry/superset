@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import type { ComponentProps } from 'react';
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -54,7 +55,7 @@ const DEFAULT_HEADER_HEIGHT = 22;
 
 // eslint-disable-next-line no-restricted-globals -- TODO: Migrate from describe blocks
 describe('ChartHolder', () => {
-  let scrollViewBase: any;
+  let scrollViewBase: typeof window.HTMLElement.prototype.scrollIntoView;
 
   const defaultProps = {
     component: {
@@ -87,6 +88,7 @@ describe('ChartHolder', () => {
     deleteComponent: () => {},
     updateComponents: () => {},
     editMode: false,
+    isInView: false,
     isComponentVisible: true,
     dashboardId: 123,
     nativeFilters: nativeFiltersInfo.filters,
@@ -103,14 +105,17 @@ describe('ChartHolder', () => {
     window.HTMLElement.prototype.scrollIntoView = scrollViewBase;
   });
 
-  const createMockStore = (customState: any = {}) =>
+  const createMockStore = (customState: Record<string, unknown> = {}) =>
     createStore(
       combineReducers(reducerIndex),
       { ...mockState, ...(initialState as any), ...customState },
       compose(applyMiddleware(thunk)),
     );
 
-  const renderWrapper = (store = createMockStore(), props: any = {}) =>
+  const renderWrapper = (
+    store = createMockStore(),
+    props: Partial<ComponentProps<typeof ChartHolder>> = {},
+  ) =>
     render(<ChartHolder {...defaultProps} {...props} />, {
       useRouter: true,
       useDnd: true,

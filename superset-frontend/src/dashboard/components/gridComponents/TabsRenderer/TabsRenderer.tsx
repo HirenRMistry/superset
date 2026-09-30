@@ -33,7 +33,11 @@ import {
   LineEditableTabs,
   TabsProps as AntdTabsProps,
 } from '@superset-ui/core/components/Tabs';
-import type { DragEndEvent } from '@dnd-kit/core';
+import type {
+  DragEndEvent,
+  DragStartEvent,
+  UniqueIdentifier,
+} from '@dnd-kit/core';
 import {
   DndContext,
   PointerSensor,
@@ -253,7 +257,7 @@ const TabsRenderer = memo<TabsRendererProps>(
     onTabsReorder,
     isEditingTabTitle = false,
   }) => {
-    const [activeId, setActiveId] = useState<string | null>(null);
+    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
     // Sticky tab bars only apply in view mode: while editing, drag-and-drop
     // targets and hover menus are positioned against the tab bar's place in
@@ -316,7 +320,7 @@ const TabsRenderer = memo<TabsRendererProps>(
       activationConstraint: { distance: 10 },
     });
 
-    const onDragStart = useCallback((event: any) => {
+    const onDragStart = useCallback((event: DragStartEvent) => {
       setActiveId(event.active.id);
     }, []);
 

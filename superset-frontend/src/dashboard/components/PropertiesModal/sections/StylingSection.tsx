@@ -88,7 +88,7 @@ interface StylingSectionProps {
   customCss: string;
   hasCustomLabelsColor: boolean;
   showChartTimestamps: boolean;
-  onThemeChange: (value: any) => void;
+  onThemeChange: (value: number | null | undefined) => void;
   onColorSchemeChange: (
     colorScheme: string,
     options?: { updateMetadata?: boolean },
@@ -230,7 +230,9 @@ const StylingSection = ({
           <Select
             data-test="dashboard-theme-select"
             value={selectedThemeId}
-            onChange={onThemeChange}
+            onChange={value =>
+              onThemeChange(typeof value === 'number' ? value : null)
+            }
             options={themes.map(theme => ({
               value: theme.id,
               label: theme.theme_name,

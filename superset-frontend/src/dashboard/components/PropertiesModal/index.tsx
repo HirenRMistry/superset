@@ -580,7 +580,8 @@ const PropertiesModal = ({
   };
 
   // Section handlers for extracted components
-  const handleThemeChange = (value: any) => setSelectedThemeId(value || null);
+  const handleThemeChange = (value: number | null | undefined) =>
+    setSelectedThemeId(value || null);
   const handleRefreshFrequencyChange = (value: number) => {
     setRefreshFrequency(value);
     // Keep the Advanced JSON editor in sync with the dropdown so the two

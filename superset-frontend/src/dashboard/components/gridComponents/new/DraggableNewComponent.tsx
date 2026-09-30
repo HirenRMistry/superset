@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { memo } from 'react';
+import { memo, type ComponentType } from 'react';
+import type { IconType } from '@superset-ui/core/components/Icons';
 import cx from 'classnames';
 import { css, styled } from '@apache-superset/core/theme';
 import { DragDroppable } from 'src/dashboard/components/dnd/DragDroppable';
@@ -31,7 +32,7 @@ interface DraggableNewComponentProps {
   label: string;
   className?: string;
   meta?: Record<string, any>;
-  IconComponent?: any;
+  IconComponent?: ComponentType<IconType>;
 }
 
 const NewComponent = styled.div`

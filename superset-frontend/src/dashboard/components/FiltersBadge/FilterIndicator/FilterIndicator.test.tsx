@@ -59,12 +59,12 @@ test('Should call "onClick"', async () => {
 
 test('Should render "value"', () => {
   const props = createProps();
-  props.indicator.value = ['any', 'string'];
+  props.indicator.value = ['foo', 'bar'];
   render(<FilterIndicator {...props} />);
 
   expect(
     screen.getByRole('button', {
-      name: 'search Vaccine Approach: any, string',
+      name: 'search Vaccine Approach: foo, bar',
     }),
   ).toBeInTheDocument();
 });

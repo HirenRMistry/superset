@@ -27,7 +27,7 @@ import {
 } from 'src/dashboard/util/componentTypes';
 
 import { mockStoreWithTabs } from 'spec/fixtures/mockStore';
-import Header from './Header';
+import Header, { ComponentShape } from './Header';
 
 // eslint-disable-next-line no-restricted-globals -- TODO: Migrate from describe blocks
 describe('Header', () => {
@@ -35,9 +35,9 @@ describe('Header', () => {
     id: string;
     dashboardId: string;
     parentId: string;
-    component: any;
+    component: ComponentShape;
     depth: number;
-    parentComponent: any;
+    parentComponent: ComponentShape;
     index: number;
     editMode: boolean;
     embeddedMode: boolean;
@@ -59,9 +59,9 @@ describe('Header', () => {
         ...baseComponent.meta,
         text: 'New Title',
       },
-    },
+    } as ComponentShape,
     depth: 1,
-    parentComponent: newComponentFactory(DASHBOARD_GRID_TYPE),
+    parentComponent: newComponentFactory(DASHBOARD_GRID_TYPE) as ComponentShape,
     index: 0,
     editMode: false,
     embeddedMode: false,

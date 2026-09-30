@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ComponentProps } from 'react';
 import { render, screen } from 'spec/helpers/testing-library';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
@@ -282,7 +283,10 @@ const getDefaultState = (orientation: FilterBarOrientation) => ({
   datasources: {},
 });
 
-function setupWithFilters(overrideState: any = {}, props: any = {}) {
+function setupWithFilters(
+  overrideState: Record<string, unknown> = {},
+  props: Partial<ComponentProps<typeof FilterControls>> = {},
+) {
   const state = {
     ...getDefaultState(FilterBarOrientation.Vertical),
     ...overrideState,

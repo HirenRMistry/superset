@@ -19,6 +19,7 @@
 import { t } from '@apache-superset/core/translation';
 import { styled } from '@apache-superset/core/theme';
 import type { editors } from '@apache-superset/core';
+import type { JsonValidationAnnotation } from '@superset-ui/core/components/AsyncAceEditor';
 import { EditorHost } from 'src/core/editors';
 import { ModalFormField } from 'src/components/Modal';
 import { ValidationObject } from 'src/components/Modal/useModalValidation';
@@ -49,7 +50,7 @@ const StyledEditorHost = styled(EditorHost)`
 
 interface AdvancedSectionProps {
   jsonMetadata: string;
-  jsonAnnotations: any[];
+  jsonAnnotations: JsonValidationAnnotation[];
   validationStatus: ValidationObject;
   onJsonMetadataChange: (value: string) => void;
 }

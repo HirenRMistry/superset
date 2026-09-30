@@ -50,7 +50,9 @@ test('shows error when JSON is invalid', () => {
   const props = {
     ...defaultProps,
     validationStatus,
-    jsonAnnotations: [{ type: 'error', text: 'Invalid JSON' }],
+    jsonAnnotations: [
+      { type: 'error' as const, row: 0, column: 0, text: 'Invalid JSON' },
+    ],
   };
 
   render(<AdvancedSection {...props} />);

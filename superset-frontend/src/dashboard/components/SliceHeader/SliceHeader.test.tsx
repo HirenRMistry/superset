@@ -31,11 +31,24 @@ import {
 } from 'spec/helpers/mobileTestUtils';
 import { isEmbedded } from 'src/dashboard/util/isEmbedded';
 import { useUiConfig } from 'src/components/UiConfigContext';
+import type { MouseEventHandler } from 'react';
+import type { FiltersBadgeProps } from 'src/dashboard/components/FiltersBadge';
 import SliceHeader from '.';
+
+type ControlsMockHandler = MouseEventHandler<HTMLButtonElement>;
+type SliceHeaderControlsMockProps = Record<string, unknown> & {
+  toggleExpandSlice?: ControlsMockHandler;
+  forceRefresh?: ControlsMockHandler;
+  logExploreChart?: ControlsMockHandler;
+  exportCSV?: ControlsMockHandler;
+  handleToggleFullSize?: ControlsMockHandler;
+  addSuccessToast?: ControlsMockHandler;
+  addDangerToast?: ControlsMockHandler;
+};
 
 jest.mock('src/dashboard/components/SliceHeaderControls', () => ({
   __esModule: true,
-  default: (props: any) => (
+  default: (props: SliceHeaderControlsMockProps) => (
     <div
       data-test="SliceHeaderControls"
       data-slice={JSON.stringify(props.slice)}
@@ -106,7 +119,7 @@ jest.mock('src/dashboard/components/SliceHeaderControls', () => ({
 
 jest.mock('src/dashboard/components/FiltersBadge', () => ({
   __esModule: true,
-  default: (props: any) => (
+  default: (props: FiltersBadgeProps) => (
     <div data-test="FiltersBadge" data-chart-id={props.chartId} />
   ),
 }));
@@ -149,7 +162,8 @@ const initialState = {
   dataMask: {},
 };
 
-const createProps = (overrides: any = {}) => ({
+const createProps = (overrides: Record<string, unknown> = {}) => ({
+  exploreUrl: '/explore/',
   filters: {}, // is in typing but not being used
   editMode: false,
   annotationQuery: { param01: 'annotationQuery' } as any,
@@ -204,11 +218,13 @@ const createProps = (overrides: any = {}) => ({
   logExploreChart: jest.fn(),
   logEvent: jest.fn(),
   exportCSV: jest.fn(),
-  formData: { slice_id: 1, datasource: '58__table' },
+  formData: { slice_id: 1, datasource: '58__table', viz_type: VizType.Bar },
   width: 100,
   height: 100,
   ...overrides,
 });
+
+type SliceHeaderTestProps = ReturnType<typeof createProps>;
 
 test('Should render', () => {
   const props = createProps();
@@ -233,14 +249,13 @@ test('Should expose a class hook, not just data-test, for fullscreen styling', (
 });
 
 test('Should render - default props', () => {
-  const props = createProps();
+  const props: Partial<SliceHeaderTestProps> = createProps();
 
   delete props.forceRefresh;
   delete props.updateSliceName;
   delete props.toggleExpandSlice;
   delete props.logExploreChart;
   delete props.exportCSV;
-  delete props.innerRef;
   delete props.editMode;
   delete props.annotationQuery;
   delete props.annotationError;
@@ -252,7 +267,7 @@ test('Should render - default props', () => {
   delete props.supersetCanExplore;
   delete props.supersetCanDownload;
 
-  render(<SliceHeader {...props} />, {
+  render(<SliceHeader {...(props as SliceHeaderTestProps)} />, {
     useRedux: true,
     useRouter: true,
     initialState,
@@ -261,14 +276,13 @@ test('Should render - default props', () => {
 });
 
 test('Should render default props and "call" actions', async () => {
-  const props = createProps();
+  const props: Partial<SliceHeaderTestProps> = createProps();
 
   delete props.forceRefresh;
   delete props.updateSliceName;
   delete props.toggleExpandSlice;
   delete props.logExploreChart;
   delete props.exportCSV;
-  delete props.innerRef;
   delete props.editMode;
   delete props.annotationQuery;
   delete props.annotationError;
@@ -280,7 +294,7 @@ test('Should render default props and "call" actions', async () => {
   delete props.supersetCanExplore;
   delete props.supersetCanDownload;
 
-  render(<SliceHeader {...props} />, {
+  render(<SliceHeader {...(props as SliceHeaderTestProps)} />, {
     useRedux: true,
     useRouter: true,
     initialState,

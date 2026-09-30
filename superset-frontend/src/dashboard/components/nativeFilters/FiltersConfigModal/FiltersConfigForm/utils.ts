@@ -19,7 +19,11 @@
 import { flatMapDeep } from 'lodash-es';
 import type { FormInstance } from '@superset-ui/core/components';
 import { useState, useCallback } from 'react';
-import { CustomControlItem, Dataset } from '@superset-ui/chart-controls';
+import {
+  ControlPanelSectionConfig,
+  CustomControlItem,
+  Dataset,
+} from '@superset-ui/chart-controls';
 import { Column, DatasourceType, ensureIsArray } from '@superset-ui/core';
 import { GenericDataType } from '@apache-superset/core/common';
 import { DatasourcesState, ChartsState } from 'src/dashboard/types';
@@ -67,12 +71,14 @@ export const setNativeFilterFieldValues = (
 };
 
 export const getControlItems = (
-  controlConfig: { [key: string]: any } = {},
+  controlConfig: {
+    controlPanelSections?: (ControlPanelSectionConfig | null)[];
+  } = {},
 ): CustomControlItem[] =>
   (flatMapDeep(controlConfig.controlPanelSections)?.reduce(
-    (acc: any, { controlSetRows = [] }: any) => [
+    (acc: unknown[], section: ControlPanelSectionConfig | null) => [
       ...acc,
-      ...flatMapDeep(controlSetRows),
+      ...flatMapDeep(section?.controlSetRows ?? []),
     ],
     [],
   ) as CustomControlItem[]) ?? [];

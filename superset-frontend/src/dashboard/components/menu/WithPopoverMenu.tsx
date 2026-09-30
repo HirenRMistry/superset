@@ -19,6 +19,7 @@
 import {
   ReactNode,
   CSSProperties,
+  MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -28,6 +29,8 @@ import {
 import cx from 'classnames';
 import { addAlpha } from '@superset-ui/core';
 import { css, styled } from '@apache-superset/core/theme';
+
+type PopoverMenuEvent = MouseEvent & { target: HTMLElement };
 
 type ShouldFocusContainer = HTMLDivElement & {
   contains: (event_target: EventTarget & HTMLElement) => boolean;
@@ -39,11 +42,8 @@ interface WithPopoverMenuProps {
   menuItems?: ReactNode[];
   onChangeFocus?: ((focus: boolean) => void) | null;
   isFocused?: boolean;
-  // Event argument is left as "any" because of the clash. In props it seems
-  // like it should be React.FocusEvent<>, however from handleClick() we can also
-  // derive that type is EventListenerOrEventListenerObject.
   shouldFocus?: (
-    event: any,
+    event: PopoverMenuEvent,
     container: ShouldFocusContainer | null,
     menuRef: HTMLDivElement | null,
   ) => boolean;
@@ -52,7 +52,7 @@ interface WithPopoverMenuProps {
 }
 
 const defaultShouldFocus = (
-  event: any,
+  event: PopoverMenuEvent,
   container: ShouldFocusContainer | null,
   menuRef: HTMLDivElement | null,
 ): boolean => {
@@ -136,22 +136,22 @@ function WithPopoverMenu({
   // skip it. Without this, the same click bubbles to document after a
   // re-render has detached its event.target, causing shouldFocus to return
   // false and immediately undoing the focus.
-  const focusEventRef = useRef<Event | null>(null);
+  const focusEventRef = useRef<MouseEvent | null>(null);
 
   const handleClick = useCallback(
-    (event: any) => {
+    (event: ReactMouseEvent<HTMLDivElement> | MouseEvent) => {
       if (!editMode) {
         return;
       }
 
-      const nativeEvent = event.nativeEvent || event;
+      const nativeEvent = 'nativeEvent' in event ? event.nativeEvent : event;
       if (focusEventRef.current === nativeEvent) {
         focusEventRef.current = null;
         return;
       }
 
       const shouldFocusResult = shouldFocusFunc(
-        event,
+        nativeEvent as PopoverMenuEvent,
         containerRef.current,
         menuRef.current,
       );
@@ -191,7 +191,7 @@ function WithPopoverMenu({
   // Add/remove document event listeners only on focus/editMode transitions.
   useEffect(() => {
     if (isFocused && editMode) {
-      const listener = (event: Event) => handleClickRef.current(event);
+      const listener = (event: MouseEvent) => handleClickRef.current(event);
       document.addEventListener('click', listener);
       document.addEventListener('drag', listener);
 

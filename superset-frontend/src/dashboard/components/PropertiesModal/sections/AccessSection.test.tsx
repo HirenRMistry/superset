@@ -68,7 +68,7 @@ test('does not render viewers field when EnableViewers is off', () => {
 
 test('renders viewers field when EnableViewers is on', () => {
   mockedIsFeatureEnabled.mockImplementation(
-    (flag: any) => flag === FeatureFlag.EnableViewers,
+    (flag: FeatureFlag) => flag === FeatureFlag.EnableViewers,
   );
 
   render(<AccessSection {...defaultProps} />);
@@ -79,7 +79,7 @@ test('renders viewers field when EnableViewers is on', () => {
 
 test('renders tags field when TaggingSystem feature is enabled', () => {
   mockedIsFeatureEnabled.mockImplementation(
-    (flag: any) => flag === FeatureFlag.TaggingSystem,
+    (flag: FeatureFlag) => flag === FeatureFlag.TaggingSystem,
   );
 
   render(<AccessSection {...defaultProps} />);
@@ -113,7 +113,7 @@ test('shows editors helper text', () => {
 
 test('shows editors and viewers helper text when EnableViewers is on', () => {
   mockedIsFeatureEnabled.mockImplementation(
-    (flag: any) => flag === FeatureFlag.EnableViewers,
+    (flag: FeatureFlag) => flag === FeatureFlag.EnableViewers,
   );
 
   render(<AccessSection {...defaultProps} />);

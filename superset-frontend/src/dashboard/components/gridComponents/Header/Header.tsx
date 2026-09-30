@@ -38,6 +38,7 @@ import {
   BACKGROUND_WHITE,
 } from 'src/dashboard/util/constants';
 import * as componentTypes from 'src/dashboard/util/componentTypes';
+import type { DropResult } from 'src/dashboard/components/dnd/dragDroppableConfig';
 
 export type ComponentType =
   (typeof componentTypes)[keyof typeof componentTypes];
@@ -58,7 +59,7 @@ export interface ComponentMeta {
   headerSize?: HeaderStyleValue;
   background?: BackgroundStyleValue;
   chartId?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ComponentShape {
@@ -79,7 +80,7 @@ interface HeaderProps {
   index: number;
   editMode: boolean;
   embeddedMode: boolean;
-  handleComponentDrop: (dropResult: any) => void;
+  handleComponentDrop: (dropResult: DropResult) => void;
   deleteComponent: (id: string, parentId: string) => void;
   updateComponents: (changes: Record<string, ComponentShape>) => void;
 }

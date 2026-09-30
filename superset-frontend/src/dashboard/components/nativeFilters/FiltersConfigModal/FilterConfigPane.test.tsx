@@ -54,7 +54,10 @@ const defaultState = {
   dashboardLayout,
 };
 
-function defaultRender(initialState: any = defaultState, props = defaultProps) {
+function defaultRender(
+  initialState: Record<string, unknown> = defaultState,
+  props = defaultProps,
+) {
   return render(<FilterConfigPane {...props} />, {
     initialState,
     useDnd: true,
