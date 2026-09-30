@@ -48,7 +48,7 @@ export default function AdhocFilterEditPopoverSqlTabContent({
   onChange: (filter: AdhocFilter) => void;
   options: OptionSortType[];
   height: number;
-  datasource?: any;
+  datasource?: { id?: number; type?: string };
 }) {
   const editorRef = useRef<editors.EditorHandle>(null);
   const theme = useTheme();

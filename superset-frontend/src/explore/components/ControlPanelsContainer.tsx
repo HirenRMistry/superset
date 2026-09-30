@@ -76,7 +76,7 @@ import { ExploreActions } from 'src/explore/actions/exploreActions';
 import { ChartState, ExplorePageState } from 'src/explore/types';
 import { Icons } from '@superset-ui/core/components/Icons';
 import ControlRow from './ControlRow';
-import Control from './Control';
+import Control, { ControlProps } from './Control';
 import { ExploreAlert } from './ExploreAlert';
 import { RunQueryButton } from './RunQueryButton';
 import { CONTROL_SECTIONS_ID, Operators } from '../constants';
@@ -285,7 +285,10 @@ function getState(
   };
 }
 
-function useResetOnChangeRef(initialValue: () => any, resetOnChangeValue: any) {
+function useResetOnChangeRef<T>(
+  initialValue: () => T,
+  resetOnChangeValue: unknown,
+) {
   const value = useRef(initialValue());
   const prevResetOnChangeValue = useRef(resetOnChangeValue);
   if (prevResetOnChangeValue.current !== resetOnChangeValue) {
@@ -513,7 +516,7 @@ export const ControlPanelsContainer = (props: ControlPanelsContainerProps) => {
       description: baseDescription,
       ...restProps
     } = controlData as ControlState & {
-      validationErrors?: any[];
+      validationErrors?: ControlProps['validationErrors'];
     };
 
     const isVisible = visibility
@@ -592,7 +595,7 @@ export const ControlPanelsContainer = (props: ControlPanelsContainerProps) => {
     );
   };
 
-  const sectionHasHadNoErrors = useResetOnChangeRef(
+  const sectionHasHadNoErrors = useResetOnChangeRef<Record<string, boolean>>(
     () => ({}),
     form_data.viz_type,
   );

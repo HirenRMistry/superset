@@ -176,7 +176,15 @@ function PropertiesModal({
   }, [tags.length]);
 
   const showError = useCallback(
-    ({ error, statusText, message }: any) => {
+    ({
+      error,
+      statusText,
+      message,
+    }: {
+      error?: string;
+      statusText?: string;
+      message?: string;
+    }) => {
       let errorText = error || statusText || t('An error has occurred');
       if (message === 'Forbidden') {
         errorText = t('You do not have permission to edit this chart');
@@ -239,7 +247,7 @@ function PropertiesModal({
     }
 
     setSubmitting(true);
-    const payload: { [key: string]: any } = {
+    const payload: { [key: string]: unknown } = {
       slice_name: name || null,
       description: description || null,
       cache_timeout: cacheTimeout ? Number(cacheTimeout) : null,

@@ -41,7 +41,7 @@ export type ControlProps = {
   rightNode?: ReactNode;
   formData?: QueryFormData | null;
   value?: JsonValue;
-  validationErrors?: any[];
+  validationErrors?: BaseControlComponentProps['validationErrors'];
   hidden?: boolean;
   renderTrigger?: boolean;
   default?: JsonValue;
@@ -83,7 +83,8 @@ export default function Control(props: ControlProps) {
   };
 
   const onChange = useCallback(
-    (value: any, errors: any[]) => setControlValue(name, value, errors),
+    (value: JsonValue, errors: ControlProps['validationErrors']) =>
+      setControlValue(name, value, errors),
     [name, setControlValue],
   );
 

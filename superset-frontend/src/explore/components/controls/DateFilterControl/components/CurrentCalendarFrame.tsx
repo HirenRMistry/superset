@@ -18,7 +18,7 @@
  */
 import { useEffect } from 'react';
 import { t } from '@apache-superset/core/translation';
-import { Radio } from '@superset-ui/core/components/Radio';
+import { Radio, RadioChangeEvent } from '@superset-ui/core/components/Radio';
 import {
   CURRENT_RANGE_OPTIONS,
   CURRENT_CALENDAR_RANGE_SET,
@@ -50,7 +50,7 @@ export function CurrentCalendarFrame({ onChange, value }: FrameComponentProps) {
         }}
         size="large"
         value={value}
-        onChange={(e: any) => {
+        onChange={(e: RadioChangeEvent) => {
           let newValue = e.target.value;
           newValue = newValue.trim();
           if (newValue === '') return;

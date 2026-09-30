@@ -83,8 +83,8 @@ const determineErrorMap = (tab: string, contour: ContourType) => {
       contour.upperThreshold &&
       contour.lowerThreshold
     ) {
-      const lower = parseFloat(contour.lowerThreshold);
-      const upper = parseFloat(contour.upperThreshold);
+      const lower = parseFloat(String(contour.lowerThreshold));
+      const upper = parseFloat(String(contour.upperThreshold));
       if (lower >= upper) {
         errorMap.lowerThreshold.push(
           t('Lower threshold must be lower than upper threshold'),
@@ -169,8 +169,8 @@ const ContourPopoverControl = ({
     if (sectionIsComplete !== isComplete) setIsComplete(sectionIsComplete);
   }, [contour, currentTab]);
 
-  const onTabChange = (activeKey: any) => {
-    setCurrentTab(activeKey);
+  const onTabChange = (activeKey: string) => {
+    setCurrentTab(activeKey as ContourTypes);
   };
 
   const updateStrokeWidth = (value: number | string) => {

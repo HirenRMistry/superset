@@ -202,7 +202,7 @@ test('render selected metrics correctly', () => {
 
 test('warn selected custom metric when metric gets removed from dataset', async () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
+  const onChange = (val: typeof metricValues) => {
     metricValues = val;
   };
 
@@ -255,7 +255,7 @@ test('warn selected custom metric when metric gets removed from dataset', async 
 test('warn selected custom metric when metric gets removed from dataset for single-select metric control', async () => {
   let metricValue = 'metric_b';
 
-  const onChange = (val: any) => {
+  const onChange = (val: typeof metricValue) => {
     metricValue = val;
   };
 
@@ -314,7 +314,7 @@ test('warn selected custom metric when metric gets removed from dataset for sing
 
 test('remove selected adhoc metric when column gets removed from dataset', async () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
+  const onChange = (val: typeof metricValues) => {
     metricValues = val;
   };
 
@@ -357,7 +357,7 @@ test('remove selected adhoc metric when column gets removed from dataset', async
 
 test('update adhoc metric name when column label in dataset changes', () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
+  const onChange = (val: typeof metricValues) => {
     metricValues = val;
   };
 
@@ -521,7 +521,7 @@ test('cannot drop non-saved metrics when disallow_adhoc_metrics', () => {
 
 test('title changes on custom SQL text change', async () => {
   let metricValues = [adhocMetricA, 'metric_b'];
-  const onChange = (val: any[]) => {
+  const onChange = (val: typeof metricValues) => {
     metricValues = [...val];
   };
 

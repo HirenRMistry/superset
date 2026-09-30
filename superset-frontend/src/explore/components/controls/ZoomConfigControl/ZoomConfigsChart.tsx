@@ -19,7 +19,7 @@
 import { t } from '@apache-superset/core/translation';
 import { init as echartsInit } from 'echarts';
 import { createRef, FC, useEffect } from 'react';
-import { ZoomConfigsChartProps } from './types';
+import { DragGraphicElement, ZoomConfigsChartProps } from './types';
 import {
   createDragGraphicOptions,
   dataToZoomConfigs,
@@ -115,7 +115,7 @@ export const ZoomConfigsChart: FC<ZoomConfigsChartProps> = ({
     chart.setOption(option);
 
     const onDrag = function (
-      this: any,
+      this: DragGraphicElement,
       dataIndex: number | undefined,
       itemIndex: number,
     ) {
@@ -146,10 +146,16 @@ export const ZoomConfigsChart: FC<ZoomConfigsChartProps> = ({
       }, 200);
     };
 
-    const onWidthDrag = function (this: any, dataIndex: number | undefined) {
+    const onWidthDrag = function (
+      this: DragGraphicElement,
+      dataIndex: number | undefined,
+    ) {
       onDrag.call(this, dataIndex, 0);
     };
-    const onHeightDrag = function (this: any, dataIndex: number | undefined) {
+    const onHeightDrag = function (
+      this: DragGraphicElement,
+      dataIndex: number | undefined,
+    ) {
       onDrag.call(this, dataIndex, 1);
     };
 

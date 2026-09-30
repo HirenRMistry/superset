@@ -23,6 +23,7 @@ import {
   DatePicker,
   Select,
   Radio,
+  RadioChangeEvent,
   AntdThemeProvider,
   Col,
   Row,
@@ -89,7 +90,7 @@ export function CustomFrame(props: FrameComponentProps) {
     }
   }
 
-  function onAnchorMode(option: any) {
+  function onAnchorMode(option: RadioChangeEvent) {
     const radioValue = option.target.value;
     if (radioValue === 'now') {
       props.onChange(

@@ -25,7 +25,7 @@ export interface FetchTopNValuesParams {
   metric: string;
   limit: number;
   sortAscending?: boolean;
-  filters?: any[];
+  filters?: QueryFormData['adhoc_filters'];
   timeRange?: string;
 }
 
@@ -72,7 +72,7 @@ export async function fetchTopNValues({
 
     // Extract values from the response data
     // The data is typically an array of objects with column names as keys
-    return result.data.map((row: any) => ({
+    return result.data.map((row: Record<string, string | number>) => ({
       value: row[column],
       metricValue: row[metric],
     }));

@@ -132,7 +132,7 @@ export const createDragGraphicOptions = ({
   fillColor,
   strokeColor,
 }: CreateDragGraphicOptions) => {
-  const graphics: any[] = [];
+  const graphics: ReturnType<typeof createDragGraphicOption>[] = [];
   data.forEach((dataItem: number[], dataIndex: number) => {
     const widthGraphic = createDragGraphicOption({
       dataItem,

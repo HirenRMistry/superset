@@ -31,6 +31,7 @@ import {
   VizType,
 } from '@superset-ui/core';
 import { logging } from '@apache-superset/core/utils';
+import type { ComponentProps } from 'react';
 import fetchMock from 'fetch-mock';
 import setupColors from 'src/setup/setupColors';
 import { ANNOTATION_TYPES_METADATA } from './AnnotationTypes';
@@ -144,8 +145,9 @@ beforeEach(() => {
   fetchMock.clearHistory();
 });
 
-const waitForRender = (props?: any) =>
-  waitFor(() => render(<AnnotationLayer {...defaultProps} {...props} />));
+const waitForRender = (
+  props?: Partial<ComponentProps<typeof AnnotationLayer>>,
+) => waitFor(() => render(<AnnotationLayer {...defaultProps} {...props} />));
 
 test('renders with default props', async () => {
   await waitForRender();
