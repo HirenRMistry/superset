@@ -119,7 +119,6 @@ const selectActiveFilters = createSelector(
   (chartConfiguration, nativeFilters, dataMask, allSliceIds) => ({
     ...getActiveFilters(),
     ...getAllActiveFilters({
-      // eslint-disable-next-line camelcase
       chartConfiguration,
       nativeFilters,
       dataMask,
@@ -157,7 +156,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   // surfaces through the error boundary.
   const isNotFoundError = (error as SupersetApiError | null)?.status === 404;
   const readyToRender = Boolean(dashboard && charts);
-  const { dashboard_title, id = 0 } = dashboard || {};
+  const { dashboard_title: dashboardTitle, id = 0 } = dashboard || {};
 
   // The live title is edited in Redux and persisted via an in-SPA save with no
   // full reload, so the useDashboard() API result can be stale. Track the live
@@ -175,7 +174,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   useDashboardFilterSync(hydratedDashboardId === id ? id : undefined);
   const pageTitle =
     (hydratedDashboardId === id ? liveDashboardTitle : undefined) ||
-    dashboard_title;
+    dashboardTitle;
 
   // Get CSS from dashboardInfo (unified properties location)
   const css =

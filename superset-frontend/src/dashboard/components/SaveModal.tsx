@@ -109,7 +109,7 @@ function SaveModal({
     // check refresh frequency is for current session or persist
     const refreshFrequencyToUse = shouldPersistRefreshFrequency
       ? refreshFrequency
-      : dashboardInfo.metadata?.refresh_frequency; // eslint-disable camelcase
+      : dashboardInfo.metadata?.refresh_frequency;
 
     const data: Record<string, unknown> = {
       certified_by: dashboardInfo.certified_by,

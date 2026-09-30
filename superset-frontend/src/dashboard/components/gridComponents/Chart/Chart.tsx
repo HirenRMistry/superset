@@ -257,11 +257,7 @@ const Chart = (props: ChartProps) => {
   const suppressLoadingSpinner = useIsChartAutoRefreshing(props.id);
 
   const isCached: boolean[] = useMemo(
-    () =>
-      queriesResponse?.map(
-        // eslint-disable-next-line camelcase
-        (q: JsonObject) => q.is_cached as boolean,
-      ) || [],
+    () => queriesResponse?.map((q: JsonObject) => q.is_cached as boolean) || [],
     [queriesResponse],
   );
 
@@ -716,10 +712,7 @@ const Chart = (props: ChartProps) => {
 
   const isLoading = chartStatus === 'loading';
   const cachedDttm: string[] =
-    queriesResponse?.map(
-      // eslint-disable-next-line camelcase
-      (q: JsonObject) => q.cached_dttm as string,
-    ) || [];
+    queriesResponse?.map((q: JsonObject) => q.cached_dttm as string) || [];
 
   // Build slice header shape matching SliceHeaderControlsProps
   const sliceForHeader = {

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/* eslint-disable camelcase */
 import {
   FILTER_CONFIG_ATTRIBUTES,
   TIME_FILTER_LABELS,
@@ -48,15 +47,15 @@ interface FilterConfigs {
 }
 
 export default function getFilterConfigsFromFormdata(
-  form_data: FilterFormData = {},
+  formData: FilterFormData = {},
 ): FilterConfigs {
   const {
-    date_filter,
-    filter_configs = [],
-    show_sqla_time_column,
-    show_sqla_time_granularity,
-  } = form_data;
-  let configs = filter_configs.reduce<FilterConfigs>(
+    date_filter: dateFilter,
+    filter_configs: filterConfigs = [],
+    show_sqla_time_column: showSqlaTimeColumn,
+    show_sqla_time_granularity: showSqlaTimeGranularity,
+  } = formData;
+  let configs = filterConfigs.reduce<FilterConfigs>(
     ({ columns, labels }, config) => {
       let defaultValues: string | string[] | null | undefined = config[
         FILTER_CONFIG_ATTRIBUTES.DEFAULT_VALUE
@@ -90,10 +89,10 @@ export default function getFilterConfigsFromFormdata(
     { columns: {}, labels: {} },
   );
 
-  if (date_filter) {
+  if (dateFilter) {
     let updatedColumns = {
       ...configs.columns,
-      [TIME_FILTER_MAP.time_range]: form_data.time_range,
+      [TIME_FILTER_MAP.time_range]: formData.time_range,
     };
     const updatedLabels = {
       ...configs.labels,
@@ -107,17 +106,17 @@ export default function getFilterConfigsFromFormdata(
       ),
     };
 
-    if (show_sqla_time_granularity) {
+    if (showSqlaTimeGranularity) {
       updatedColumns = {
         ...updatedColumns,
-        [TIME_FILTER_MAP.time_grain_sqla]: form_data.time_grain_sqla,
+        [TIME_FILTER_MAP.time_grain_sqla]: formData.time_grain_sqla,
       };
     }
 
-    if (show_sqla_time_column) {
+    if (showSqlaTimeColumn) {
       updatedColumns = {
         ...updatedColumns,
-        [TIME_FILTER_MAP.granularity_sqla]: form_data.granularity_sqla,
+        [TIME_FILTER_MAP.granularity_sqla]: formData.granularity_sqla,
       };
     }
 
