@@ -20,7 +20,7 @@
 // '@superset-ui/core' ensures mockAntdWithDesktopBreakpoint is defined
 // before anything transitively requires (and thus mocks) 'antd'.
 import { mockAntdWithDesktopBreakpoint } from 'spec/helpers/mobileTestUtils';
-import fetchMock from 'fetch-mock';
+import fetchMock, { type CallLog } from 'fetch-mock';
 import { isFeatureEnabled } from '@superset-ui/core';
 import { mockUserSubjectsBootstrapData } from 'spec/helpers/mockBootstrapData';
 import {
@@ -239,10 +239,8 @@ test('selecting Editor filter encodes rel_m_m editors in API call', async () => 
     { result: [{ value: 1, text: 'Admin User' }], count: 1 },
     { name: API_ENDPOINTS.DASHBOARD_RELATED_EDITORS },
   );
-  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: any) => {
-    const reqUrl =
-      typeof callLog === 'string' ? callLog : callLog?.url || callLog;
-    throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
+  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: CallLog) => {
+    throw new Error(`[fetchMock catch-all] Unmatched GET: ${callLog.url}`);
   });
 
   renderDashboardList(mockAdminUser);
@@ -284,10 +282,8 @@ test('selecting Modified by filter encodes rel_o_m changed_by in API call', asyn
     { result: [{ value: 1, text: 'Admin User' }], count: 1 },
     { name: API_ENDPOINTS.DASHBOARD_RELATED_CHANGED_BY },
   );
-  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: any) => {
-    const reqUrl =
-      typeof callLog === 'string' ? callLog : callLog?.url || callLog;
-    throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
+  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: CallLog) => {
+    throw new Error(`[fetchMock catch-all] Unmatched GET: ${callLog.url}`);
   });
 
   renderDashboardList(mockAdminUser);

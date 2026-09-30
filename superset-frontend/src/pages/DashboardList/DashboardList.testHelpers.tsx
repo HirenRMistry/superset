@@ -18,6 +18,7 @@
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import fetchMock from 'fetch-mock';
+import type { CallLog } from 'fetch-mock';
 import rison from 'rison';
 import { render, screen } from 'spec/helpers/testing-library';
 import { Provider } from 'react-redux';
@@ -31,7 +32,7 @@ import { SubjectType } from 'src/types/Subject';
 
 // Cast to accept partial mock props in tests
 const DashboardList = DashboardListComponent as unknown as React.FC<
-  Record<string, any>
+  Record<string, unknown>
 >;
 
 export const mockHandleResourceExport =
@@ -162,6 +163,13 @@ export const mockDashboards = [
   },
 ];
 
+export interface MockUser {
+  userId?: number;
+  firstName?: string;
+  lastName?: string;
+  roles?: Record<string, string[][]>;
+}
+
 // Mock users with various permission levels
 export const mockAdminUser = {
   userId: 1,
@@ -210,7 +218,7 @@ export const API_ENDPOINTS = {
 };
 
 interface StoreState {
-  user?: any;
+  user?: MockUser;
   common?: {
     conf?: {
       SUPERSET_WEBSERVER_TIMEOUT?: number;
@@ -236,7 +244,7 @@ export const createMockStore = (initialState: Partial<StoreState> = {}) =>
       }),
   });
 
-export const createDefaultStoreState = (user: any): StoreState => ({
+export const createDefaultStoreState = (user: MockUser): StoreState => ({
   user,
   common: {
     conf: {
@@ -249,8 +257,8 @@ export const createDefaultStoreState = (user: any): StoreState => ({
 });
 
 export const renderDashboardList = (
-  user: any,
-  props: Record<string, any> = {},
+  user: MockUser,
+  props: Record<string, unknown> = {},
   storeState: Partial<StoreState> = {},
 ) => {
   const defaultStoreState = createDefaultStoreState(user);
@@ -330,10 +338,8 @@ export const setupMocks = (
 
   fetchMock.get(
     API_ENDPOINTS.CATCH_ALL,
-    (callLog: any) => {
-      const reqUrl =
-        typeof callLog === 'string' ? callLog : callLog?.url || callLog;
-      throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
+    (callLog: CallLog) => {
+      throw new Error(`[fetchMock catch-all] Unmatched GET: ${callLog.url}`);
     },
     { name: API_ENDPOINTS.CATCH_ALL },
   );
@@ -343,10 +349,12 @@ export const setupMocks = (
  * Parse the rison-encoded `q` query parameter from a fetch-mock call URL.
  * Returns the decoded object, or null if parsing fails.
  */
-export const parseQueryFromUrl = (url: string): Record<string, any> | null => {
+export const parseQueryFromUrl = (
+  url: string,
+): Record<string, unknown> | null => {
   const match = url.match(/[?&]q=(.+?)(?:&|$)/);
   if (!match) return null;
-  return rison.decode(decodeURIComponent(match[1]));
+  return rison.decode<Record<string, unknown>>(decodeURIComponent(match[1]));
 };
 
 /**
