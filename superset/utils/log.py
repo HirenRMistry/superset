@@ -25,6 +25,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime, timedelta
+from types import TracebackType
 from typing import Any, Callable, cast, Literal
 
 from flask import g, has_request_context, request
@@ -208,7 +209,7 @@ class AbstractEventLogger(ABC):
         log_to_statsd: bool = True,
         duration: timedelta | None = None,
         **payload_override: object,
-    ) -> object:
+    ) -> AbstractEventLogger:
         # pylint: disable=W0201
         self.action = action
         self.object_ref = object_ref
@@ -220,7 +221,12 @@ class AbstractEventLogger(ABC):
         # pylint: disable=W0201
         self.start = datetime.now()
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         # Log data w/ arguments being passed in
         self.log_with_context(
             action=self.action,
