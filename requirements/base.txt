@@ -269,6 +269,13 @@ packaging==25.0
     #   shillelagh
 pandas==2.3.3
     # via apache-superset (pyproject.toml)
+# NOTE: paramiko cannot move past 3.x yet. PYSEC-2026-2858 (CVE-2026-44405,
+# SHA-1 allowed in rsakey.py) affects all releases through 4.0.0 and is only
+# resolved in 5.0.0, but paramiko 4.0 removed DSSKey and sshtunnel 0.4.0 (latest
+# release) references paramiko.DSSKey unconditionally when building every
+# SSHTunnelForwarder, so SSH tunnels fail with AttributeError on paramiko>=4.
+# Tracking: https://github.com/HirenRMistry/superset/issues/9
+#           https://github.com/pahaz/sshtunnel/issues/302
 paramiko==3.5.1
     # via
     #   apache-superset (pyproject.toml)
