@@ -964,7 +964,7 @@ referencing==0.36.2
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-requests==2.33.0
+requests==2.34.2
     # via
     #   -c requirements/base-constraint.txt
     #   docker
