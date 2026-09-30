@@ -28,6 +28,7 @@ import {
   ReactNode,
 } from 'react';
 import cx from 'classnames';
+import type { ColumnInstance, Row, UseRowSelectRowProps } from 'react-table';
 import TableCollection from '@superset-ui/core/components/TableCollection';
 import BulkTagModal from 'src/features/tags/BulkTagModal';
 import {
@@ -48,6 +49,7 @@ import {
   ListViewFilters as Filters,
   SortColumn,
   CardSortSelectOption,
+  ListViewColumn,
   ViewModeType,
 } from './types';
 import { ListViewError, useListViewState } from './utils';
@@ -314,7 +316,7 @@ const ViewModeToggle = ({
   </ViewModeContainer>
 );
 export interface ListViewProps<T extends object = any> {
-  columns: any[];
+  columns: ListViewColumn[];
   data: T[];
   count: number;
   pageSize: number;
@@ -329,13 +331,13 @@ export interface ListViewProps<T extends object = any> {
   bulkActions?: Array<{
     key: string;
     name: ReactNode;
-    onSelect: (rows: any[]) => any;
+    onSelect: (rows: T[]) => unknown;
     type?: 'primary' | 'secondary' | 'danger';
-    hidden?: (rows: any[]) => boolean;
+    hidden?: (rows: T[]) => boolean;
   }>;
   bulkSelectEnabled?: boolean;
   disableBulkSelect?: () => void;
-  renderBulkSelectCopy?: (selects: any[]) => ReactNode;
+  renderBulkSelectCopy?: (selects: Row<T>[]) => ReactNode;
   renderCard?: (row: T & { loading: boolean }) => ReactNode;
   cardSortSelectOptions?: Array<CardSortSelectOption>;
   defaultViewMode?: ViewModeType;
@@ -430,8 +432,11 @@ export function ListView<T extends object = any>({
   const allowBulkTagActions = bulkTagResourceName && enableBulkTag;
   const filterable = Boolean(filters.length);
   if (filterable) {
-    const columnAccessors = columns.reduce(
-      (acc, col) => ({ ...acc, [col.id || col.accessor]: true }),
+    const columnAccessors = columns.reduce<Record<string, boolean>>(
+      (acc, col) => {
+        const key = col.id || col.accessor;
+        return key ? { ...acc, [key]: true } : acc;
+      },
       {},
     );
     filters.forEach(f => {
@@ -574,7 +579,7 @@ export function ListView<T extends object = any>({
                         .filter(
                           action =>
                             !action.hidden?.(
-                              selectedFlatRows.map((r: any) => r.original),
+                              selectedFlatRows.map(r => r.original),
                             ),
                         )
                         .map(action => (
@@ -586,7 +591,7 @@ export function ListView<T extends object = any>({
                             cta
                             onClick={() =>
                               action.onSelect(
-                                selectedFlatRows.map((r: any) => r.original),
+                                selectedFlatRows.map(r => r.original),
                               )
                             }
                           >
@@ -658,7 +663,7 @@ export function ListView<T extends object = any>({
                   headerGroups={headerGroups}
                   setSortBy={setSortBy}
                   rows={rows}
-                  columns={columns}
+                  columns={columns as unknown as ColumnInstance<T>[]}
                   loading={loading && rows.length > 0}
                   highlightRowId={highlightRowId}
                   isRowHighlighted={isRowHighlighted}
@@ -667,10 +672,12 @@ export function ListView<T extends object = any>({
                   bulkSelectEnabled={bulkSelectEnabled}
                   selectedFlatRows={selectedFlatRows}
                   toggleRowSelected={(rowId, value) => {
-                    const row = rows.find((r: any) => r.id === rowId);
+                    const row = rows.find(r => r.id === rowId);
                     if (row) {
                       prepareRow(row);
-                      (row as any).toggleRowSelected(value);
+                      (
+                        row as Row<T> & UseRowSelectRowProps<T>
+                      ).toggleRowSelected(value);
                     }
                   }}
                   toggleAllRowsSelected={toggleAllRowsSelected}

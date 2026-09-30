@@ -26,7 +26,7 @@ export interface SortColumn {
 
 export interface SelectOption {
   label: ReactNode;
-  value: any;
+  value: string | number | boolean;
   // Plain-text representation of the option. Callers should set this when
   // `label` is a ReactNode so that the option can be serialized (e.g. into
   // URL filter state) without losing the human-readable name.
@@ -36,9 +36,9 @@ export interface SelectOption {
 
 export interface CardSortSelectOption {
   desc: boolean;
-  id: any;
+  id: string;
   label: string;
-  value: any;
+  value: string;
 }
 
 export interface ListViewFilter {
@@ -59,7 +59,7 @@ export interface ListViewFilter {
   unfilteredLabel?: string;
   selects?: SelectOption[];
   onFilterOpen?: () => void;
-  onFilterUpdate?: (value?: any) => void;
+  onFilterUpdate?: (value?: InnerFilterValue) => void;
   fetchSelects?: (
     filterValue: string,
     page: number,
@@ -78,6 +78,17 @@ export interface ListViewFilter {
 
 export type ListViewFilters = ListViewFilter[];
 
+export interface ListViewColumn {
+  id?: string;
+  accessor?: string;
+  Header?: ReactNode;
+  size?: string;
+  hidden?: boolean;
+  disableSortBy?: boolean;
+  className?: string;
+  [key: string]: unknown;
+}
+
 export type ViewModeType = 'card' | 'table';
 
 export type InnerFilterValue =
@@ -88,7 +99,7 @@ export type InnerFilterValue =
   | undefined
   | string[]
   | number[]
-  | { label: ReactNode; value: string | number }
+  | SelectOption
   | [number | null, number | null];
 
 export interface ListViewFilterValue {

@@ -18,9 +18,9 @@
  */
 import { ReactNode } from 'react';
 
-export interface BaseFilter {
+export interface BaseFilter<V> {
   Header: ReactNode;
-  initialValue: any;
+  initialValue: V;
 }
 export type FilterHandler = {
   clearFilter: () => void;

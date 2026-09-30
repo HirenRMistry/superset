@@ -26,7 +26,7 @@ interface CardCollectionProps<T extends object = any> {
   bulkSelectEnabled?: boolean;
   loading: boolean;
   prepareRow: (row: Row<T>) => void;
-  renderCard?: (row: any) => ReactNode;
+  renderCard?: (row: T & { loading: boolean }) => ReactNode;
   rows: Row<T>[];
   showThumbnails?: boolean;
 }
@@ -93,7 +93,9 @@ export default function CardCollection<T extends object = any>({
       {loading &&
         rows.length === 0 &&
         Array.from({ length: 25 }, (_, i) => (
-          <div key={i}>{renderCard({ loading })}</div>
+          <div key={i}>
+            {renderCard({ loading } as T & { loading: boolean })}
+          </div>
         ))}
       {rows.length > 0 &&
         rows.map(row => {

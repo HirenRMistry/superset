@@ -48,7 +48,9 @@ const ErrorMessage = styled.div`
   left: 0;
 `;
 
-interface NumericalRangeFilterProps extends BaseFilter {
+interface NumericalRangeFilterProps extends BaseFilter<
+  [number | null, number | null] | undefined
+> {
   onSubmit: (val: [number | null, number | null]) => void;
   name: string;
   min?: number;

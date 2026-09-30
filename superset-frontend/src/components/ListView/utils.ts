@@ -41,6 +41,7 @@ import {
   ListViewFilter as Filter,
   ListViewFilterValue as FilterValue,
   InnerFilterValue,
+  ListViewColumn,
   InternalFilter,
   SortColumn,
   ViewModeType,
@@ -175,7 +176,7 @@ export function convertFiltersRison(
 
 interface UseListViewConfig<D extends object = any> {
   fetchData: (conf: FetchDataConfig) => void;
-  columns: Column<D>[];
+  columns: ListViewColumn[];
   data: D[];
   count: number;
   initialPageSize: number;
@@ -251,7 +252,7 @@ export function useListViewState<D extends object = any>({
 
   const columnsWithFilter = useMemo(
     // add exact filter type so filters with falsy values are not filtered out
-    () => columns.map(f => ({ ...f, filter: 'exact' })),
+    () => columns.map(f => ({ ...f, filter: 'exact' })) as Column<D>[],
     [columns],
   );
 

@@ -37,7 +37,7 @@ import type { BaseFilter, FilterHandler } from './types';
 import { FilterContainer } from './Base';
 import { SELECT_WIDTH } from '../utils';
 
-interface SearchHeaderProps extends BaseFilter {
+interface SearchHeaderProps extends BaseFilter<string | undefined> {
   Header: string;
   onSubmit: (val: string) => void;
   name: string;

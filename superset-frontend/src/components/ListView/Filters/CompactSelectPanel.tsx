@@ -278,7 +278,7 @@ function CompactSelectPanel(
             const isLast = i === displayOptions.length - 1;
             return (
               <OptionItem
-                key={opt.value}
+                key={String(opt.value)}
                 $active={isActive}
                 // See the OptionList comment above: native <option> can't render this.
                 // eslint-disable-next-line jsx-a11y/prefer-tag-over-role

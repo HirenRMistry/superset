@@ -247,7 +247,9 @@ function UIFilters(
         <SearchFilter
           ref={filterRefs[index]}
           Header={Header}
-          initialValue={initialValue}
+          initialValue={
+            typeof initialValue === 'string' ? initialValue : undefined
+          }
           key={key}
           name={inputName ?? id}
           toolTipDescription={toolTipDescription}
@@ -351,7 +353,11 @@ function UIFilters(
               <NumericalRangeFilter
                 ref={filterRefs[index]}
                 Header={Header}
-                initialValue={initialValue}
+                initialValue={
+                  hasRangeValue
+                    ? (initialValue as [number | null, number | null])
+                    : undefined
+                }
                 min={min}
                 max={max}
                 name={id}
