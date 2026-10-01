@@ -33,6 +33,7 @@ import { reject } from 'lodash-es';
 import {
   dangerouslyGetItemDoNotUse,
   dangerouslySetItemDoNotUse,
+  LegacyUserSettings,
   getItem,
   LocalStorageKeys,
   setItem,
@@ -155,7 +156,10 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   const params = rison.encode({ page_size: 24, distinct: false });
   const recent = `/api/v1/log/recent_activity/?q=${params}`;
   const [activeChild, setActiveChild] = useState('Loading');
-  const userKey = dangerouslyGetItemDoNotUse(id, null);
+  const userKey = dangerouslyGetItemDoNotUse<LegacyUserSettings | null>(
+    id,
+    null,
+  );
   let defaultChecked = false;
   const isThumbnailsEnabled = isFeatureEnabled(FeatureFlag.Thumbnails);
   if (isThumbnailsEnabled) {
