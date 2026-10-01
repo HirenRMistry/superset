@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from io import StringIO
 from unittest.mock import Mock, patch
 
 import paramiko
@@ -443,3 +444,30 @@ def test_ssh_tunnel_schema_round_trips_server_host_key() -> None:
     }
     loaded = DatabaseSSHTunnel().load(payload)
     assert loaded["server_host_key"] == authorized
+
+
+def test_paramiko_dsskey_shim_rejects_keys() -> None:
+    """sshtunnel references ``paramiko.DSSKey``; the shim must refuse to load."""
+    dss_key = getattr(paramiko, "DSSKey")  # noqa: B009 - removed from paramiko stubs
+    with pytest.raises(SSHException):
+        dss_key.from_private_key_file("/nonexistent/id_dsa")
+
+
+def test_sshtunnel_forwarder_builds_with_current_paramiko(tmp_path) -> None:
+    """
+    sshtunnel 0.4.0 reads ``paramiko.DSSKey`` while consolidating auth, which
+    raises ``AttributeError`` on paramiko>=4.0 without the compatibility shim.
+    A stray ``id_dsa`` in the key directory must be skipped, not crash.
+    """
+    (tmp_path / "id_dsa").write_text("not a real key")
+    pkey = Ed25519Key.from_private_key(StringIO(_make_ed25519_pem()))
+
+    forwarder = sshtunnel.SSHTunnelForwarder(
+        ("ssh.example.com", 22),
+        ssh_username="tunneluser",
+        ssh_pkey=pkey,
+        host_pkey_directories=[str(tmp_path)],
+        remote_bind_address=("db.example.com", 5432),
+    )
+
+    assert forwarder.ssh_pkeys == [pkey]

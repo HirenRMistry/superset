@@ -47,6 +47,27 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
+class _UnsupportedDSSKey:
+    """Stand-in for ``paramiko.DSSKey``, which paramiko 4.0 removed.
+
+    sshtunnel 0.4.0 still references ``paramiko.DSSKey`` when collecting keys,
+    so without this every tunnel fails with ``AttributeError``. Loading always
+    raises ``SSHException``, which sshtunnel treats as "not this key type".
+    """
+
+    @classmethod
+    def from_private_key_file(cls, filename: str, password: str | None = None) -> PKey:
+        raise SSHException("DSA (DSS) keys are not supported by paramiko>=4.0")
+
+    @classmethod
+    def from_private_key(cls, file_obj: StringIO, password: str | None = None) -> PKey:
+        raise SSHException("DSA (DSS) keys are not supported by paramiko>=4.0")
+
+
+if not hasattr(paramiko, "DSSKey"):
+    setattr(paramiko, "DSSKey", _UnsupportedDSSKey)  # noqa: B010
+
 # Order matters: paramiko's per-class loaders raise SSHException with vague
 # "unpack requires 4 bytes" messages on type mismatches, so we try the more
 # modern key types first (ed25519, ECDSA) and fall back to RSA, which is the
