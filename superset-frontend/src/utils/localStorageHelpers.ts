@@ -82,6 +82,8 @@ export type LocalStorageValues = {
   chat__state: { open: boolean; mode: string };
 };
 
+export type LegacyUserSettings = { thumbnails?: boolean };
+
 /*
  * This function should not be used directly, as it doesn't provide any type safety or any
  * guarantees that the globally namespaced localstorage key is correct.
@@ -89,10 +91,7 @@ export type LocalStorageValues = {
  * Instead, use getItem and setItem. Any legacy uses should be updated/migrated in future
  * Superset versions (as they may require breaking changes).
  * */
-export function dangerouslyGetItemDoNotUse(
-  key: string,
-  defaultValue: any,
-): any {
+export function dangerouslyGetItemDoNotUse<T>(key: string, defaultValue: T): T {
   try {
     const value = localStorage.getItem(key);
     if (value === null) {
@@ -111,7 +110,7 @@ export function dangerouslyGetItemDoNotUse(
  * Instead, use getItem and setItem. Any legacy uses should be updated/migrated in future
  * Superset versions (as they may require breaking changes).
  * */
-export function dangerouslySetItemDoNotUse(key: string, value: any): void {
+export function dangerouslySetItemDoNotUse(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {

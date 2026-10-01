@@ -68,7 +68,10 @@ import {
   deleteActionLabel,
 } from 'src/utils/softDeleteCopy';
 import SubMenu, { SubMenuProps } from 'src/features/home/SubMenu';
-import { dangerouslyGetItemDoNotUse } from 'src/utils/localStorageHelpers';
+import {
+  dangerouslyGetItemDoNotUse,
+  LegacyUserSettings,
+} from 'src/utils/localStorageHelpers';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import { Icons } from '@superset-ui/core/components/Icons';
 import PropertiesModal from 'src/dashboard/components/PropertiesModal';
@@ -262,7 +265,10 @@ function DashboardList(props: DashboardListProps) {
   const userKey =
     user?.userId === undefined
       ? null
-      : dangerouslyGetItemDoNotUse(user.userId.toString(), null);
+      : dangerouslyGetItemDoNotUse<LegacyUserSettings | null>(
+          user.userId.toString(),
+          null,
+        );
 
   const canCreate = hasPerm('can_write');
   const canEdit = hasPerm('can_write');
