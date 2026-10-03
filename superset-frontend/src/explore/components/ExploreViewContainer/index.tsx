@@ -405,8 +405,7 @@ interface StateProps {
 // Note: These modules export both action creators AND action type constants,
 // Using a callable signature to allow TypeScript to understand these are functions
 interface DispatchProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actions: Record<string, (...args: any[]) => any>;
+  actions: Record<string, (...args: unknown[]) => unknown>;
 }
 
 type ExploreViewContainerProps = StateProps & DispatchProps & OwnProps;
@@ -1004,7 +1003,7 @@ function ExploreViewContainer(props: ExploreViewContainerProps) {
           updateQueryFormData: props.actions.updateQueryFormData,
           setControlValue: (
             controlName: string,
-            value: any,
+            value: unknown,
             _chartId: number,
           ) => props.actions.setControlValue(controlName, value),
         }}

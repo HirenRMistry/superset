@@ -104,7 +104,7 @@ export type DndColumnMetricSelectProps = DndControlProps<ColumnMetricValue> & {
   selectedMetrics?: QueryFormMetric[];
   isTemporal?: boolean;
   disabledTabs?: Set<string>;
-  formData?: any;
+  formData?: QueryFormData;
 };
 
 const isDictionaryForAdhocMetric = (

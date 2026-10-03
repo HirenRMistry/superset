@@ -108,7 +108,7 @@ describe('VerifiedMetricsControl', () => {
       baseControl: 'MetricsControl',
       onChange: mockOnChange,
       extraProps: {
-        onChange: (value: any) => {
+        onChange: (value: unknown) => {
           // Simulate the MetricsControl onChange
           mockOnChange(value, props);
         },

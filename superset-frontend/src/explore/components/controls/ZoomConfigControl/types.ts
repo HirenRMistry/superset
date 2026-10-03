@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ECharts } from 'echarts';
 import { ControlComponentProps } from '@superset-ui/chart-controls';
 
 export type ZoomConfigs = ZoomConfigsFixed | ZoomConfigsLinear | ZoomConfigsExp;
@@ -64,12 +65,17 @@ export interface ZoomConfigsExp extends ZoomConfigsBase {
 
 export type ZoomConfigsControlProps = ControlComponentProps<ZoomConfigs>;
 
+export type DragGraphicHandler = (
+  this: { x: number; y: number },
+  dataIndex: number | undefined,
+) => void;
+
 export interface CreateDragGraphicOptions {
   data: number[][];
-  onWidthDrag: (...arg: any[]) => any;
-  onHeightDrag: (...args: any[]) => any;
+  onWidthDrag: DragGraphicHandler;
+  onHeightDrag: DragGraphicHandler;
   barWidth: number;
-  chart: any;
+  chart: ECharts;
   fillColor?: string;
   strokeColor?: string;
 }
@@ -78,16 +84,16 @@ export interface CreateDragGraphicOption {
   dataItem: number[];
   dataItemIndex: number;
   dataIndex: number;
-  onDrag: (...arg: any[]) => any;
+  onDrag: DragGraphicHandler;
   barWidth: number;
-  chart: any;
+  chart: ECharts;
   add: boolean;
   fillColor?: string;
   strokeColor?: string;
 }
 
 export interface GetDragGraphicPositionOptions {
-  chart: any;
+  chart: ECharts;
   x: number;
   y: number;
   barWidth: number;

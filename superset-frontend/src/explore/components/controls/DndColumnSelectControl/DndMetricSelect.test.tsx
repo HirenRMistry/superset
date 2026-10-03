@@ -202,8 +202,8 @@ test('render selected metrics correctly', () => {
 
 test('warn selected custom metric when metric gets removed from dataset', async () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
-    metricValues = val;
+  const onChange = (val: unknown) => {
+    metricValues = val as typeof metricValues;
   };
 
   const { rerender, container } = render(
@@ -255,8 +255,8 @@ test('warn selected custom metric when metric gets removed from dataset', async 
 test('warn selected custom metric when metric gets removed from dataset for single-select metric control', async () => {
   let metricValue = 'metric_b';
 
-  const onChange = (val: any) => {
-    metricValue = val;
+  const onChange = (val: unknown) => {
+    metricValue = val as typeof metricValue;
   };
 
   const { rerender, container } = render(
@@ -314,8 +314,8 @@ test('warn selected custom metric when metric gets removed from dataset for sing
 
 test('remove selected adhoc metric when column gets removed from dataset', async () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
-    metricValues = val;
+  const onChange = (val: unknown) => {
+    metricValues = val as typeof metricValues;
   };
 
   const { rerender } = render(
@@ -357,8 +357,8 @@ test('remove selected adhoc metric when column gets removed from dataset', async
 
 test('update adhoc metric name when column label in dataset changes', () => {
   let metricValues = ['metric_a', 'metric_b', adhocMetricA, adhocMetricB];
-  const onChange = (val: any[]) => {
-    metricValues = val;
+  const onChange = (val: unknown) => {
+    metricValues = val as typeof metricValues;
   };
 
   const { rerender } = render(
@@ -521,8 +521,8 @@ test('cannot drop non-saved metrics when disallow_adhoc_metrics', () => {
 
 test('title changes on custom SQL text change', async () => {
   let metricValues = [adhocMetricA, 'metric_b'];
-  const onChange = (val: any[]) => {
-    metricValues = [...val];
+  const onChange = (val: unknown) => {
+    metricValues = [...(val as typeof metricValues)];
   };
 
   const { rerender } = render(
@@ -607,7 +607,7 @@ const stringColumn = {
 };
 const unknowTypeColumn = {
   column_name: 'unknown_type_col',
-  type_generic: 'not_a_real_type',
+  type_generic: 'not_a_real_type' as unknown as GenericDataType,
 };
 const multiValueColumn = {
   column_name: 'multi_value_col',
