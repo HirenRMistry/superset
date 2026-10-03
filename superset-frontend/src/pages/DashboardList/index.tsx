@@ -35,6 +35,7 @@ import {
   handleDashboardDelete,
 } from 'src/views/CRUD/utils';
 import Subject from 'src/types/Subject';
+import type User from 'src/types/User';
 import { SUBJECT_OPTION_FILTER_PROPS } from 'src/features/subjects/SubjectSelectLabel';
 import { SubjectPile } from 'src/features/subjects/SubjectPile';
 import { useListViewResource, useFavoriteStatus } from 'src/views/CRUD/hooks';
@@ -123,6 +124,9 @@ export interface Dashboard {
   url: string;
   changed_on_utc?: string;
   description?: string;
+  certified_by?: string;
+  certification_details?: string;
+  status?: DashboardStatus;
   thumbnail_url?: string | null;
   editors?: Subject[];
   // Bare subject ids from a deployment's EXTRA_EDITORS_RESOLVER.
@@ -391,7 +395,7 @@ function DashboardList(props: DashboardListProps) {
           row: {
             original: { id },
           },
-        }: any) =>
+        }: CellProps<Dashboard>) =>
           user?.userId && (
             <FaveStar
               itemId={id}
@@ -416,7 +420,7 @@ function DashboardList(props: DashboardListProps) {
               description,
             },
           },
-        }: any) => (
+        }: CellProps<Dashboard>) => (
           <FlexRowContainer>
             <Link to={url} title={dashboardTitle}>
               {certifiedBy && (
@@ -441,7 +445,7 @@ function DashboardList(props: DashboardListProps) {
           row: {
             original: { status },
           },
-        }: any) => (
+        }: CellProps<Dashboard>) => (
           <PublishedLabel isPublished={status === DashboardStatus.PUBLISHED} />
         ),
         Header: t('Status'),
@@ -483,7 +487,7 @@ function DashboardList(props: DashboardListProps) {
           row: {
             original: { editors = [] },
           },
-        }: any) => <SubjectPile subjects={editors} />,
+        }: CellProps<Dashboard>) => <SubjectPile subjects={editors} />,
         Header: t('Editors'),
         accessor: 'editors',
         disableSortBy: true,
@@ -496,7 +500,7 @@ function DashboardList(props: DashboardListProps) {
                 row: {
                   original: { viewers = [] },
                 },
-              }: any) => <SubjectPile subjects={viewers} />,
+              }: CellProps<Dashboard>) => <SubjectPile subjects={viewers} />,
               Header: t('Viewers'),
               accessor: 'viewers',
               disableSortBy: true,
@@ -512,7 +516,14 @@ function DashboardList(props: DashboardListProps) {
               changed_by: changedBy,
             },
           },
-        }: any) => <ModifiedInfo date={changedOn} user={changedBy} />,
+        }: {
+          row: {
+            original: {
+              changed_on_delta_humanized: string;
+              changed_by?: User;
+            };
+          };
+        }) => <ModifiedInfo date={changedOn} user={changedBy} />,
         Header: t('Last modified'),
         accessor: 'changed_on_delta_humanized',
         id: 'changed_on_delta_humanized',

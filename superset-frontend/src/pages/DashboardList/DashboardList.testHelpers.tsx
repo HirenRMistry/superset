@@ -17,7 +17,7 @@
  * under the License.
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import fetchMock from 'fetch-mock';
+import fetchMock, { type CallLog } from 'fetch-mock';
 import rison from 'rison';
 import { render, screen } from 'spec/helpers/testing-library';
 import { Provider } from 'react-redux';
@@ -209,8 +209,10 @@ export const API_ENDPOINTS = {
   CATCH_ALL: 'glob:*',
 };
 
+type MockUser = Record<string, unknown>;
+
 interface StoreState {
-  user?: any;
+  user?: MockUser;
   common?: {
     conf?: {
       SUPERSET_WEBSERVER_TIMEOUT?: number;
@@ -236,7 +238,7 @@ export const createMockStore = (initialState: Partial<StoreState> = {}) =>
       }),
   });
 
-export const createDefaultStoreState = (user: any): StoreState => ({
+export const createDefaultStoreState = (user: MockUser): StoreState => ({
   user,
   common: {
     conf: {
@@ -249,7 +251,7 @@ export const createDefaultStoreState = (user: any): StoreState => ({
 });
 
 export const renderDashboardList = (
-  user: any,
+  user: MockUser,
   props: Record<string, any> = {},
   storeState: Partial<StoreState> = {},
 ) => {
@@ -330,9 +332,8 @@ export const setupMocks = (
 
   fetchMock.get(
     API_ENDPOINTS.CATCH_ALL,
-    (callLog: any) => {
-      const reqUrl =
-        typeof callLog === 'string' ? callLog : callLog?.url || callLog;
+    (callLog: CallLog) => {
+      const reqUrl = callLog.url;
       throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
     },
     { name: API_ENDPOINTS.CATCH_ALL },
