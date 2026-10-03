@@ -47,7 +47,7 @@ export const getDragGraphicPosition = ({
   barWidth,
   add,
 }: GetDragGraphicPositionOptions) => {
-  const valuePosition = chart.convertToPixel('grid', [x, y]);
+  const valuePosition = chart.convertToPixel('grid', [x, y]) as number[];
   const xPos = Math.round(valuePosition[0]);
   let yPos = valuePosition[1] - barWidth / 2;
   if (add) {
@@ -132,7 +132,7 @@ export const createDragGraphicOptions = ({
   fillColor,
   strokeColor,
 }: CreateDragGraphicOptions) => {
-  const graphics: any[] = [];
+  const graphics: ReturnType<typeof createDragGraphicOption>[] = [];
   data.forEach((dataItem: number[], dataIndex: number) => {
     const widthGraphic = createDragGraphicOption({
       dataItem,

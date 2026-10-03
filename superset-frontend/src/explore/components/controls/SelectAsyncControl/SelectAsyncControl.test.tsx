@@ -24,7 +24,14 @@ const datasetsEditorsEndpoint = 'glob:*/api/v1/dataset/related/editors*';
 
 jest.mock('@superset-ui/core/components/Select/Select', () => ({
   __esModule: true,
-  default: (props: any) => (
+  default: (props: {
+    value?: unknown;
+    placeholder?: string;
+    mode?: string;
+    multi?: boolean;
+    onChange: (value: unknown) => void;
+    mutator: () => void;
+  }) => (
     <div
       data-test="select-test"
       data-value={JSON.stringify(props.value)}

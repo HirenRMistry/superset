@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ComponentProps } from 'react';
 import {
   act,
   fireEvent,
@@ -144,8 +145,9 @@ beforeEach(() => {
   fetchMock.clearHistory();
 });
 
-const waitForRender = (props?: any) =>
-  waitFor(() => render(<AnnotationLayer {...defaultProps} {...props} />));
+const waitForRender = (
+  props?: Partial<ComponentProps<typeof AnnotationLayer>>,
+) => waitFor(() => render(<AnnotationLayer {...defaultProps} {...props} />));
 
 test('renders with default props', async () => {
   await waitForRender();

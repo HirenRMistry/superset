@@ -915,12 +915,12 @@ const SaveModal = ({
 };
 
 interface StateProps {
-  datasource: any;
-  slice: any;
+  datasource: SaveModalProps['datasource'];
+  slice: SaveModalProps['slice'];
   can_overwrite: boolean;
   user: UserWithPermissionsAndRoles;
-  dashboards: any;
-  alert: any;
+  dashboards?: unknown[];
+  alert?: string;
   isVisible: boolean;
   metadata?: ExplorePageInitialData['metadata'];
 }

@@ -55,12 +55,15 @@ const ContourOption = ({
     ? `rgba(${color.r}, ${color.g}, ${color.b}, 1)`
     : 'transparent';
 
-  const formatIsoline = (threshold: number, width: number) =>
+  const formatIsoline = (
+    threshold: number | string,
+    width: number | string | undefined,
+  ) =>
     `${t('Threshold')}: ${threshold}, ${t('color')}: ${formattedColor}, ${t(
       'stroke width',
     )}: ${width}`;
 
-  const formatIsoband = (threshold: number[]) =>
+  const formatIsoband = (threshold: (number | string | undefined)[]) =>
     `${t('Threshold')}: [${threshold[0]}, ${
       threshold[1]
     }], color: ${formattedColor}`;

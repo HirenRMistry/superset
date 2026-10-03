@@ -79,7 +79,7 @@ beforeEach(() => {
 
 function setup(
   props: Omit<DateFilterControlProps, 'name'> = defaultProps,
-  store: any = mockStore({}),
+  store: ReturnType<typeof mockStore> = mockStore({}),
 ) {
   return (
     <Provider store={store}>

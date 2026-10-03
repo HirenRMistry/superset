@@ -92,7 +92,7 @@ const ConditionalFormattingControl = ({
     if (removeIrrelevantConditions) {
       // remove formatter when corresponding column is removed from controls
       const newFormattingConfigs = conditionalFormattingConfigs.filter(config =>
-        columnOptions.some((option: any) => option?.value === config?.column),
+        columnOptions.some(option => option?.value === config?.column),
       );
       if (
         newFormattingConfigs.length !== conditionalFormattingConfigs.length &&

@@ -363,9 +363,9 @@ export const LayerConfigsPopoverContent: FC<
   const attributionDescription = t('The layer attribution');
   const attributionPlaceholder = t('© Layer attribution');
 
-  const wmsVersionOptions: { value: any; label: string }[] =
+  const wmsVersionOptions: { value: string; label: string }[] =
     serviceVersions.WMS.map(version => ({ value: version, label: version }));
-  const wfsVersionOptions: { value: any; label: string }[] =
+  const wfsVersionOptions: { value: string; label: string }[] =
     serviceVersions.WFS.map(version => ({ value: version, label: version }));
 
   return (

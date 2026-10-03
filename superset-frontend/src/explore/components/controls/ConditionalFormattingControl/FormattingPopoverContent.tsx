@@ -70,7 +70,7 @@ const targetValueValidator =
     rejectMessage: string,
   ) =>
   (targetValue: number | string) =>
-  (_: any, compareValue: number | string) => {
+  (_: unknown, compareValue: number | string) => {
     if (
       targetValue === null ||
       targetValue === undefined ||

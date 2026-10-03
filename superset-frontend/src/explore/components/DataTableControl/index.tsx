@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { useMemo, useState, useEffect, useRef, RefObject } from 'react';
+import {
+  ChangeEvent,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  RefObject,
+} from 'react';
 import { t } from '@apache-superset/core/translation';
 import { css, styled, useTheme } from '@apache-superset/core/theme';
 
@@ -157,7 +164,7 @@ export const FilterInput = ({
       prefix={<Icons.SearchOutlined iconSize="l" />}
       placeholder={t('Search')}
       value={internalValue}
-      onChange={(event: any) => {
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
         const filterText = event.target.value;
         setInternalValue(filterText);
         debouncedChangeHandler(filterText);
