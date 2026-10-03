@@ -93,7 +93,6 @@ interface ReportProps {
   dashboardId?: number;
   dashboardName?: string;
   creationMethod: ReportCreationMethod;
-  props: any;
 }
 
 const TEXT_BASED_VISUALIZATION_TYPES = [
