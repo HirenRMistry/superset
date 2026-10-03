@@ -199,7 +199,7 @@ const DatasourceModal: FunctionComponent<DatasourceModalProps> = ({
       external_url: datasource.external_url,
       metrics: datasource?.metrics?.map(
         (metric: DatasetObject['metrics'][0]) => {
-          const metricBody: any = {
+          const metricBody: Record<string, unknown> = {
             expression: metric.expression,
             description: metric.description,
             metric_name: metric.metric_name,

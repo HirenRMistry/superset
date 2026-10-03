@@ -764,7 +764,7 @@ function ColumnCollectionTable({
                         details={record.certification_details}
                       />
                     )}
-                    {v}
+                    {v as string}
                   </StyledLabelWrapper>
                 ),
               type: d => (d ? <Label>{String(d)}</Label> : null),
@@ -793,7 +793,7 @@ function ColumnCollectionTable({
                         details={record.certification_details}
                       />
                     )}
-                    {v}
+                    {v as string}
                   </StyledLabelWrapper>
                 ),
               type: d => (d ? <Label>{String(d)}</Label> : null),

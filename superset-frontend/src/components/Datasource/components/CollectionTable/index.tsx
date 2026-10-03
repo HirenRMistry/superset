@@ -39,6 +39,7 @@ import Table, {
 import Fieldset from '../Fieldset';
 import { recurseReactClone } from '../../utils';
 import {
+  type CollectionRecord,
   type CRUDCollectionProps,
   type Sort,
   SortOrder as SortOrderEnum,
@@ -59,7 +60,7 @@ const StyledButtonWrapper = styled.span`
   `}
 `;
 
-type CollectionItem = { id: string | number; [key: string]: unknown };
+type CollectionItem = CollectionRecord & { id: string | number };
 
 function createKeyedCollection(arr: Array<object>) {
   const collectionArray = arr.map(

@@ -50,6 +50,14 @@ export interface ChangeDatasourceModalProps {
   show: boolean;
 }
 
+export interface CollectionRecord {
+  is_certified?: boolean;
+  certified_by?: string;
+  certification_details?: string;
+  warning_markdown?: string;
+  [key: string]: unknown;
+}
+
 export interface CRUDCollectionProps {
   allowAddItem?: boolean;
   allowDeletes?: boolean;
@@ -65,7 +73,7 @@ export interface CRUDCollectionProps {
     (
       val: unknown,
       label: string,
-      record: any,
+      record: CollectionRecord,
     ) => DetailedHTMLProps<
       TdHTMLAttributes<HTMLTableCellElement>,
       HTMLTableCellElement
@@ -77,11 +85,11 @@ export interface CRUDCollectionProps {
       val: unknown,
       onChange: (value: unknown) => void,
       label: string,
-      record: any,
+      record: CollectionRecord,
     ) => ReactNode
   >;
-  onChange?: (arg0: any) => void;
-  tableColumns: any[];
+  onChange?: (collection: object[]) => void;
+  tableColumns: string[];
   tableLayout?: 'fixed' | 'auto';
   sortColumns: string[];
   stickyHeader?: boolean;
