@@ -74,7 +74,7 @@ const DatabaseConnectionForm = ({
   const parameters = dbModel?.parameters as {
     properties: {
       [key: string]: {
-        default?: any;
+        default?: unknown;
         description?: string;
       };
     };
