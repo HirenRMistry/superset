@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ReactNode } from 'react';
 import { render, screen, waitFor } from 'spec/helpers/testing-library';
 import userEvent from '@testing-library/user-event';
 import { SupersetClient } from '@superset-ui/core';
@@ -31,9 +32,9 @@ jest.mock('@superset-ui/core', () => ({
   SupersetClient: {
     get: jest.fn(),
   },
-  t: (str: string, ...args: any[]) => {
+  t: (str: string, ...args: unknown[]) => {
     if (args.length > 0 && str.includes('%s')) {
-      return str.replace('%s', args[0]);
+      return str.replace('%s', String(args[0]));
     }
     return str;
   },
@@ -43,13 +44,21 @@ jest.mock('@superset-ui/core', () => ({
 // Mock fetchTopNValues utility
 jest.mock('./MatrixifyControl/utils/fetchTopNValues', () => ({
   fetchTopNValues: jest.fn(),
-  extractDimensionValues: jest.fn(values => values.map((v: any) => v.value)),
+  extractDimensionValues: jest.fn((values: { value: unknown }[]) =>
+    values.map(v => v.value),
+  ),
 }));
 
 // Mock ControlHeader
 jest.mock('src/explore/components/ControlHeader', () => ({
   __esModule: true,
-  default: ({ label, description }: any) => (
+  default: ({
+    label,
+    description,
+  }: {
+    label?: ReactNode;
+    description?: ReactNode;
+  }) => (
     <div data-testid="control-header">
       {label && <span data-testid="label">{label}</span>}
       {description && <span data-testid="description">{description}</span>}

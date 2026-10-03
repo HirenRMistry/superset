@@ -18,7 +18,10 @@
  */
 import { useEffect } from 'react';
 import { t } from '@apache-superset/core/translation';
-import { Radio } from '@superset-ui/core/components/Radio';
+import {
+  Radio,
+  type RadioChangeEvent,
+} from '@superset-ui/core/components/Radio';
 import {
   CALENDAR_RANGE_OPTIONS,
   CALENDAR_RANGE_SET,
@@ -54,7 +57,7 @@ export function CalendarFrame({ onChange, value }: FrameComponentProps) {
         }}
         size="large"
         value={value}
-        onChange={(e: any) => onChange(e.target.value)}
+        onChange={(e: RadioChangeEvent) => onChange(e.target.value)}
         options={CALENDAR_RANGE_OPTIONS}
       />
     </>

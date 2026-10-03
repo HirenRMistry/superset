@@ -18,7 +18,7 @@
  */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import {
   fireEvent,
@@ -84,7 +84,7 @@ jest.mock('@superset-ui/core/components/TreeSelect', () => ({
     onChange,
     disabled,
   }: {
-    onChange: (val: any) => void;
+    onChange: (val: string) => void;
     disabled?: boolean;
   }) => (
     <input
@@ -122,12 +122,15 @@ const initialStore = mockStore(initialState);
 const defaultProps = {
   addDangerToast: jest.fn(),
   onHide: () => ({}),
-  actions: bindActionCreators(saveModalActions as any, (arg: any) => {
-    if (typeof arg === 'function') {
-      return arg(jest.fn);
-    }
-    return arg;
-  }),
+  actions: bindActionCreators(
+    saveModalActions as any,
+    ((arg: unknown) => {
+      if (typeof arg === 'function') {
+        return arg(jest.fn);
+      }
+      return arg;
+    }) as Dispatch,
+  ),
   form_data: { datasource: '107__table', url_params: { foo: 'bar' } },
 };
 
@@ -836,13 +839,15 @@ test('addChartToDashboard creates new row when no existing row has space', async
     json: { result: mockDashboard },
   });
 
-  let putRequestBody: any = null;
-  SupersetClient.put = jest.fn().mockImplementationOnce((request: any) => {
-    putRequestBody = request;
-    return Promise.resolve({
-      json: { result: mockDashboard },
+  let putRequestBody = null as { body: string } | null;
+  SupersetClient.put = jest
+    .fn()
+    .mockImplementationOnce((request: { body: string }) => {
+      putRequestBody = request;
+      return Promise.resolve({
+        json: { result: mockDashboard },
+      });
     });
-  });
 
   const mockRowId = 'test-row-id';
   const mockNanoid = jest.spyOn(require('nanoid'), 'nanoid');
@@ -852,7 +857,7 @@ test('addChartToDashboard creates new row when no existing row has space', async
     await addChartToDashboard(dashboardId, chartId, tabId, sliceName);
 
     expect(SupersetClient.put).toHaveBeenCalled();
-    const body = JSON.parse(putRequestBody.body);
+    const body = JSON.parse(putRequestBody?.body ?? '{}');
     const updatedPositionJson = JSON.parse(body.position_json);
 
     expect(updatedPositionJson[`ROW-${mockRowId}`]).toBeDefined();

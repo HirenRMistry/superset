@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { t, tn } from '@apache-superset/core/translation';
 import {
@@ -42,6 +42,8 @@ import {
 import { DndItemType } from 'src/explore/components/DndItemType';
 import DndSelectLabel from 'src/explore/components/controls/DndColumnSelectControl/DndSelectLabel';
 import { savedMetricType } from 'src/explore/components/controls/MetricControl/types';
+import { ISaveableDatasource } from 'src/SqlLab/components/SaveDatasetModal';
+import { Datasource } from 'src/explore/types';
 import { AGGREGATES } from 'src/explore/constants';
 import { datasetLabelLower } from 'src/features/semanticLayers/label';
 
@@ -102,7 +104,7 @@ const isDictionaryForAdhocMetric = (value: QueryFormMetric) =>
 
 export const coerceMetrics = (
   addedMetrics: QueryFormMetric | QueryFormMetric[] | undefined | null,
-  savedMetrics: Metric[],
+  savedMetrics: { metric_name?: string }[],
   columns: ColumnMeta[],
 ) => {
   if (!addedMetrics) {
@@ -177,14 +179,31 @@ const getOptionsForSavedMetrics = (
 
 type ValueType = Metric | AdhocMetric | QueryFormMetric;
 
-const DndMetricSelect = (props: any) => {
+type DndMetricSelectValue =
+  | QueryFormMetric
+  | AdhocMetric
+  | Record<string, unknown>;
+
+type DndMetricSelectProps = {
+  onChange: (value: ValueType | ValueType[] | null) => void;
+  multi?: boolean;
+  datasource?: Datasource & ISaveableDatasource;
+  savedMetrics: savedMetricType[];
+  columns: ColumnMeta[];
+  value?: DndMetricSelectValue | DndMetricSelectValue[] | null;
+  name?: string;
+  label?: ReactNode;
+  [key: string]: unknown;
+};
+
+const DndMetricSelect = (props: DndMetricSelectProps) => {
   const { onChange, multi, datasource, savedMetrics } = props;
 
   const extra = useMemo<{ disallow_adhoc_metrics?: boolean }>(() => {
     let extra = {};
     if (datasource?.extra) {
       try {
-        extra = JSON.parse(datasource.extra);
+        extra = JSON.parse(datasource.extra as string);
       } catch {} // eslint-disable-line no-empty
     }
     return extra;
@@ -248,7 +267,11 @@ const DndMetricSelect = (props: any) => {
   );
 
   const [value, setValue] = useState<ValueType[]>(
-    coerceMetrics(props.value, props.savedMetrics, props.columns),
+    coerceMetrics(
+      props.value as QueryFormMetric | QueryFormMetric[] | null | undefined,
+      props.savedMetrics,
+      props.columns,
+    ),
   );
   const [droppedItem, setDroppedItem] = useState<
     DatasourcePanelDndItem | typeof EMPTY_OBJECT
@@ -256,7 +279,13 @@ const DndMetricSelect = (props: any) => {
   const [newMetricPopoverVisible, setNewMetricPopoverVisible] = useState(false);
 
   useEffect(() => {
-    setValue(coerceMetrics(props.value, props.savedMetrics, props.columns));
+    setValue(
+      coerceMetrics(
+        props.value as QueryFormMetric | QueryFormMetric[] | null | undefined,
+        props.savedMetrics,
+        props.columns,
+      ),
+    );
   }, [
     JSON.stringify(props.value),
     JSON.stringify(props.savedMetrics),
@@ -356,7 +385,11 @@ const DndMetricSelect = (props: any) => {
   );
 
   const newSavedMetricOptions = useMemo(
-    () => getOptionsForSavedMetrics(props.savedMetrics, props.value),
+    () =>
+      getOptionsForSavedMetrics(
+        props.savedMetrics,
+        props.value as (string | AdhocMetric)[],
+      ),
     [props.savedMetrics, props.value],
   );
 
@@ -364,8 +397,10 @@ const DndMetricSelect = (props: any) => {
     (index: number) =>
       getOptionsForSavedMetrics(
         props.savedMetrics,
-        props.value,
-        props.value?.[index],
+        props.value as (string | AdhocMetric)[],
+        (props.value as (string | AdhocMetric)[] | undefined)?.[index] as
+          | string
+          | undefined,
       ),
     [props.savedMetrics, props.value],
   );
@@ -383,7 +418,7 @@ const DndMetricSelect = (props: any) => {
         option={option as any}
         onMetricEdit={onMetricEdit}
         onRemoveMetric={onRemoveMetric}
-        columns={props.columns}
+        columns={props.columns as { column_name: string; type: string }[]}
         savedMetrics={props.savedMetrics}
         savedMetricsOptions={getSavedMetricOptionsForMetric(index)}
         datasource={datasourceForPopover}
@@ -508,14 +543,15 @@ const DndMetricSelect = (props: any) => {
         sortableType={sortableType}
         itemCount={value.length}
         {...props}
+        name={props.name ?? ''}
       />
       <AdhocMetricPopoverTrigger
         adhocMetric={adhocMetric}
         onMetricEdit={onNewMetric}
-        columns={props.columns}
+        columns={props.columns as { column_name: string; type: string }[]}
         savedMetricsOptions={newSavedMetricOptions}
         savedMetric={EMPTY_OBJECT as savedMetricType}
-        datasource={datasourceForPopover}
+        datasource={datasourceForPopover as Datasource & ISaveableDatasource}
         isControlledComponent
         visible={newMetricPopoverVisible}
         togglePopover={togglePopover}

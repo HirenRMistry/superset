@@ -25,7 +25,7 @@ type TimeRangeValueType = [string, string];
 
 export interface TimeRangeControlProps extends ControlHeaderProps {
   value?: TimeRangeValueType;
-  onChange?: (value: TimeRangeValueType, errors: any) => void;
+  onChange?: (value: TimeRangeValueType, errors: unknown) => void;
   allowClear?: boolean;
   showNow?: boolean;
   allowEmpty?: [boolean, boolean];

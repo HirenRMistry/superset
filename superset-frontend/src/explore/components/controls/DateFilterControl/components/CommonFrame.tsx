@@ -17,7 +17,10 @@
  * under the License.
  */
 import { t } from '@apache-superset/core/translation';
-import { Radio } from '@superset-ui/core/components/Radio';
+import {
+  Radio,
+  type RadioChangeEvent,
+} from '@superset-ui/core/components/Radio';
 import {
   COMMON_RANGE_OPTIONS,
   COMMON_RANGE_SET,
@@ -50,7 +53,7 @@ export function CommonFrame(props: FrameComponentProps) {
         }}
         size="large"
         value={commonRange}
-        onChange={(e: any) => props.onChange(e.target.value)}
+        onChange={(e: RadioChangeEvent) => props.onChange(e.target.value)}
         options={COMMON_RANGE_OPTIONS}
       />
     </>

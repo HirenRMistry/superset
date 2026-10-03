@@ -39,6 +39,7 @@ import {
   FeatureFlag,
   getClientErrorObject,
   ensureIsArray,
+  type ClientErrorObject,
 } from '@superset-ui/core';
 import Chart, { Slice } from 'src/types/Chart';
 import { useAppDispatch } from 'src/views/store';
@@ -176,7 +177,7 @@ function PropertiesModal({
   }, [tags.length]);
 
   const showError = useCallback(
-    ({ error, statusText, message }: any) => {
+    ({ error, statusText, message }: ClientErrorObject) => {
       let errorText = error || statusText || t('An error has occurred');
       if (message === 'Forbidden') {
         errorText = t('You do not have permission to edit this chart');
@@ -239,7 +240,7 @@ function PropertiesModal({
     }
 
     setSubmitting(true);
-    const payload: { [key: string]: any } = {
+    const payload: Record<string, unknown> = {
       slice_name: name || null,
       description: description || null,
       cache_timeout: cacheTimeout ? Number(cacheTimeout) : null,

@@ -115,7 +115,7 @@ export const ZoomConfigsChart: FC<ZoomConfigsChartProps> = ({
     chart.setOption(option);
 
     const onDrag = function (
-      this: any,
+      this: { x: number; y: number },
       dataIndex: number | undefined,
       itemIndex: number,
     ) {
@@ -146,10 +146,16 @@ export const ZoomConfigsChart: FC<ZoomConfigsChartProps> = ({
       }, 200);
     };
 
-    const onWidthDrag = function (this: any, dataIndex: number | undefined) {
+    const onWidthDrag = function (
+      this: { x: number; y: number },
+      dataIndex: number | undefined,
+    ) {
       onDrag.call(this, dataIndex, 0);
     };
-    const onHeightDrag = function (this: any, dataIndex: number | undefined) {
+    const onHeightDrag = function (
+      this: { x: number; y: number },
+      dataIndex: number | undefined,
+    ) {
       onDrag.call(this, dataIndex, 1);
     };
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { ensureIsArray, usePrevious } from '@superset-ui/core';
+import { ensureIsArray, Metric, usePrevious } from '@superset-ui/core';
 import { t } from '@apache-superset/core/translation';
 import { isEqual } from 'lodash-es';
 import ControlHeader from 'src/explore/components/ControlHeader';
@@ -31,15 +31,27 @@ import {
 import MetricDefinitionValue from './MetricDefinitionValue';
 import AdhocMetric, { dedupeAdhocMetricOptionName } from './AdhocMetric';
 import AdhocMetricPopoverTrigger from './AdhocMetricPopoverTrigger';
+import { savedMetricType } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AdhocMetricConfig = ConstructorParameters<typeof AdhocMetric>[0];
+
+type MetricLike =
+  | string
+  | {
+      metric_name?: string;
+      optionName?: string;
+      column?: { column_name?: string } | null;
+    };
+
+type ColumnLike = { column_name?: string };
+
 function getOptionsForSavedMetrics(
-  savedMetrics: any,
-  currentMetricValues: any,
-  currentMetric: any,
+  savedMetrics: savedMetricType[] | undefined,
+  currentMetricValues: unknown,
+  currentMetric: unknown,
 ) {
   return (
-    savedMetrics?.filter((savedMetric: { metric_name: string }) =>
+    savedMetrics?.filter(savedMetric =>
       Array.isArray(currentMetricValues)
         ? !currentMetricValues.includes(savedMetric.metric_name) ||
           savedMetric.metric_name === currentMetric
@@ -48,15 +60,20 @@ function getOptionsForSavedMetrics(
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isDictionaryForAdhocMetric(value: any) {
-  return value && !(value instanceof AdhocMetric) && value.expressionType;
+function isDictionaryForAdhocMetric(
+  value: unknown,
+): value is AdhocMetricConfig {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !(value instanceof AdhocMetric) &&
+    Boolean((value as { expressionType?: unknown }).expressionType)
+  );
 }
 
 // adhoc metrics are stored as dictionaries in URL params. We convert them back into the
 // AdhocMetric class for typechecking, consistency and instance method access.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function coerceAdhocMetrics(value: any) {
+function coerceAdhocMetrics(value: unknown): unknown[] {
   if (!value) {
     return [];
   }
@@ -69,8 +86,7 @@ function coerceAdhocMetrics(value: any) {
   // Metrics are identified by optionName when editing; regenerate any that
   // collide so each keeps a unique identity (see dedupeAdhocMetricOptionName).
   const seenOptionNames = new Set<string>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return value.map((val: any) => {
+  return value.map((val: unknown) => {
     if (isDictionaryForAdhocMetric(val)) {
       return dedupeAdhocMetricOptionName(new AdhocMetric(val), seenOptionNames);
     }
@@ -81,25 +97,21 @@ function coerceAdhocMetrics(value: any) {
 const emptySavedMetric = { metric_name: '', expression: '' };
 
 // TODO: use typeguards to distinguish saved metrics from adhoc metrics
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getMetricsMatchingCurrentDataset = (
-  value: any,
-  columns: any,
-  savedMetrics: any,
+  value: unknown,
+  columns: ColumnLike[] | undefined,
+  savedMetrics: savedMetricType[] | undefined,
 ) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ensureIsArray(value).filter((metric: any) => {
+  ensureIsArray(value as MetricLike | MetricLike[]).filter(metric => {
     if (typeof metric === 'string' || metric.metric_name) {
+      const metricName =
+        typeof metric === 'string' ? metric : metric.metric_name;
       return savedMetrics?.some(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (savedMetric: any) =>
-          savedMetric.metric_name === metric ||
-          savedMetric.metric_name === metric.metric_name,
+        savedMetric => savedMetric.metric_name === metricName,
       );
     }
     return columns?.some(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (column: any) =>
+      column =>
         !metric.column || metric.column.column_name === column.column_name,
     );
   });
@@ -131,8 +143,7 @@ const MetricsControl = ({
   const prevSavedMetrics = usePrevious(savedMetrics);
 
   const handleChange = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (opts: any) => {
+    (opts: unknown) => {
       // if clear out options
       if (opts === null) {
         onChange(null);
@@ -141,10 +152,14 @@ const MetricsControl = ({
 
       const transformedOpts = ensureIsArray(opts);
       const optionValues = transformedOpts
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .map((option: any) => {
+        .map(option => {
           // pre-defined metric
-          if (option.metric_name) {
+          if (
+            typeof option === 'object' &&
+            option !== null &&
+            'metric_name' in option &&
+            option.metric_name
+          ) {
             return option.metric_name;
           }
           return option;
@@ -165,16 +180,15 @@ const MetricsControl = ({
   );
 
   const onMetricEdit = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (changedMetric: any, oldMetric: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newValue = value.map((val: any) => {
+    (changedMetric: Metric, oldMetric: Metric & { optionName?: string }) => {
+      const newValue = value.map(val => {
+        const { optionName } = (val ?? {}) as Exclude<MetricLike, string>;
         if (
           // compare saved metrics
           val === oldMetric.metric_name ||
           // compare adhoc metrics
-          typeof val.optionName !== 'undefined'
-            ? val.optionName === oldMetric.optionName
+          typeof optionName !== 'undefined'
+            ? optionName === oldMetric.optionName
             : false
         ) {
           return changedMetric;
@@ -218,7 +232,12 @@ const MetricsControl = ({
   );
 
   const savedMetricOptions = useMemo(
-    () => getOptionsForSavedMetrics(savedMetrics, propsValue, null),
+    () =>
+      getOptionsForSavedMetrics(
+        savedMetrics as savedMetricType[],
+        propsValue,
+        null,
+      ),
     [propsValue, savedMetrics],
   );
 
@@ -264,8 +283,8 @@ const MetricsControl = ({
     ) {
       const matchingMetrics = getMetricsMatchingCurrentDataset(
         propsValue,
-        columns,
-        savedMetrics,
+        columns as ColumnLike[],
+        savedMetrics as savedMetricType[],
       );
       if (!isEqual(matchingMetrics, propsValue)) {
         handleChange(matchingMetrics);
@@ -298,7 +317,7 @@ const MetricsControl = ({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         savedMetrics={savedMetrics as any}
         savedMetricsOptions={getOptionsForSavedMetrics(
-          savedMetrics,
+          savedMetrics as savedMetricType[],
           value,
           value?.[index],
         )}

@@ -28,13 +28,14 @@ export interface DatasourcePanelDndItem {
 }
 
 export function isDatasourcePanelDndItem(
-  item: any,
+  item: unknown,
 ): item is DatasourcePanelDndItem {
-  return item?.value && item?.type;
+  const candidate = item as Partial<DatasourcePanelDndItem> | null | undefined;
+  return Boolean(candidate?.value && candidate?.type);
 }
 
-export function isSavedMetric(item: any): item is Metric {
-  return item?.metric_name;
+export function isSavedMetric(item: unknown): item is Metric {
+  return Boolean((item as Partial<Metric> | null | undefined)?.metric_name);
 }
 
 export type DatasourcePanelColumn = {

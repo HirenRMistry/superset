@@ -72,7 +72,7 @@ const setupTest = (props: Partial<PopoverProps> = createProps()) => {
   const setStateMock = jest.fn();
   jest
     .spyOn(global.React, 'useState')
-    .mockImplementation(((state: any) => [
+    .mockImplementation(((state: unknown) => [
       state,
       state === 'right' ? setStateMock : jest.fn(),
     ]) as any);

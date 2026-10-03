@@ -19,7 +19,7 @@
 import { t } from '@apache-superset/core/translation';
 import { useTheme } from '@apache-superset/core/theme';
 
-import { Tooltip } from '@superset-ui/core/components';
+import { Tooltip, type TooltipProps } from '@superset-ui/core/components';
 import { ClassNames } from '@emotion/react';
 
 const TIME_PICKER_HELPER = (
@@ -104,7 +104,7 @@ holiday("Easter Monday", datetime("2019"), "UK")`}</code>
   </>
 );
 
-const StyledTooltip = (props: any) => {
+const StyledTooltip = (props: TooltipProps) => {
   const theme = useTheme();
   return (
     <ClassNames>
@@ -140,6 +140,6 @@ const StyledTooltip = (props: any) => {
   );
 };
 
-export default function DateFunctionTooltip(props: any) {
+export default function DateFunctionTooltip(props: TooltipProps) {
   return <StyledTooltip title={TIME_PICKER_HELPER} {...props} />;
 }
