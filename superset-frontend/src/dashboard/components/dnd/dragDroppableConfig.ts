@@ -22,6 +22,8 @@ import {
   ConnectDragSource,
   ConnectDragPreview,
   ConnectDropTarget,
+  DragSourceConnector,
+  DropTargetConnector,
 } from 'react-dnd';
 import { LayoutItem, ComponentType } from 'src/dashboard/types';
 import handleHover from './handleHover';
@@ -98,7 +100,7 @@ export const dragConfig: [
     canDrag: (props: DragDroppableProps) => boolean;
     beginDrag: (props: DragDroppableProps) => DragItem;
   },
-  (connect: any, monitor: DragSourceMonitor) => DragStateProps,
+  (connect: DragSourceConnector, monitor: DragSourceMonitor) => DragStateProps,
 ] = [
   TYPE,
   {
@@ -120,7 +122,7 @@ export const dragConfig: [
     },
   },
   function dragStateToProps(
-    connect: any,
+    connect: DragSourceConnector,
     monitor: DragSourceMonitor,
   ): DragStateProps {
     return {
@@ -148,7 +150,7 @@ export const dropConfig: [
       component: DragDroppableComponent,
     ) => DropResult | undefined;
   },
-  (connect: any, monitor: DropTargetMonitor) => DropStateProps,
+  (connect: DropTargetConnector, monitor: DropTargetMonitor) => DropStateProps,
 ] = [
   TYPE,
   {
@@ -180,7 +182,7 @@ export const dropConfig: [
     },
   },
   function dropStateToProps(
-    connect: any,
+    connect: DropTargetConnector,
     monitor: DropTargetMonitor,
   ): DropStateProps {
     return {

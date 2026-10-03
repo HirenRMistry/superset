@@ -28,6 +28,7 @@ import {
 } from '@superset-ui/core';
 import { FilterBarOrientation } from 'src/dashboard/types';
 import FilterControls from './FilterControls';
+import type { ComponentProps } from 'react';
 
 const mockStore = configureStore([thunk]);
 
@@ -282,7 +283,10 @@ const getDefaultState = (orientation: FilterBarOrientation) => ({
   datasources: {},
 });
 
-function setupWithFilters(overrideState: any = {}, props: any = {}) {
+function setupWithFilters(
+  overrideState: Record<string, unknown> = {},
+  props: Partial<ComponentProps<typeof FilterControls>> = {},
+) {
   const state = {
     ...getDefaultState(FilterBarOrientation.Vertical),
     ...overrideState,

@@ -67,13 +67,12 @@ export const setNativeFilterFieldValues = (
 };
 
 export const getControlItems = (
-  controlConfig: { [key: string]: any } = {},
+  controlConfig: {
+    controlPanelSections?: ({ controlSetRows?: unknown[] } | null)[];
+  } = {},
 ): CustomControlItem[] =>
-  (flatMapDeep(controlConfig.controlPanelSections)?.reduce(
-    (acc: any, { controlSetRows = [] }: any) => [
-      ...acc,
-      ...flatMapDeep(controlSetRows),
-    ],
+  (flatMapDeep(controlConfig.controlPanelSections)?.reduce<unknown[]>(
+    (acc, section) => [...acc, ...flatMapDeep(section?.controlSetRows ?? [])],
     [],
   ) as CustomControlItem[]) ?? [];
 

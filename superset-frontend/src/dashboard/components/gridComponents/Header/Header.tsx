@@ -22,6 +22,7 @@ import { css, styled } from '@apache-superset/core/theme';
 import PopoverDropdown from '@superset-ui/core/components/PopoverDropdown';
 import { EditableTitle } from '@superset-ui/core/components';
 import { Draggable } from 'src/dashboard/components/dnd/DragDroppable';
+import type { DropResult } from 'src/dashboard/components/dnd/dragDroppableConfig';
 import DragHandle from 'src/dashboard/components/dnd/DragHandle';
 import AnchorLink from 'src/dashboard/components/AnchorLink';
 import HoverMenu from 'src/dashboard/components/menu/HoverMenu';
@@ -58,7 +59,7 @@ export interface ComponentMeta {
   headerSize?: HeaderStyleValue;
   background?: BackgroundStyleValue;
   chartId?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ComponentShape {
@@ -79,7 +80,7 @@ interface HeaderProps {
   index: number;
   editMode: boolean;
   embeddedMode: boolean;
-  handleComponentDrop: (dropResult: any) => void;
+  handleComponentDrop: (dropResult: DropResult) => void;
   deleteComponent: (id: string, parentId: string) => void;
   updateComponents: (changes: Record<string, ComponentShape>) => void;
 }

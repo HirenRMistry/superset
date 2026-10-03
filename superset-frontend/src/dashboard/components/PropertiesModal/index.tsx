@@ -23,6 +23,7 @@ import {
   Form,
   Collapse,
   CollapseLabelInModal,
+  type SelectValue,
 } from '@superset-ui/core/components';
 import { useJsonValidation } from '@superset-ui/core/components/AsyncAceEditor';
 import { type TagType } from 'src/components';
@@ -580,7 +581,8 @@ const PropertiesModal = ({
   };
 
   // Section handlers for extracted components
-  const handleThemeChange = (value: any) => setSelectedThemeId(value || null);
+  const handleThemeChange = (value: SelectValue) =>
+    setSelectedThemeId(typeof value === 'number' && value ? value : null);
   const handleRefreshFrequencyChange = (value: number) => {
     setRefreshFrequency(value);
     // Keep the Advanced JSON editor in sync with the dropdown so the two

@@ -424,13 +424,15 @@ export const useDownloadMenuItems = (
           key: 'download-pdf',
           label: imageExportLabel(pdfMenuItemTitle),
           disabled: imageDisabled,
-          onClick: (e: any) => onDownloadPdf(e.domEvent),
+          onClick: ({ domEvent }: { domEvent: SyntheticEvent }) =>
+            onDownloadPdf(domEvent),
         },
         {
           key: 'download-image',
           label: imageExportLabel(imageMenuItemTitle),
           disabled: imageDisabled,
-          onClick: (e: any) => onDownloadImage(e.domEvent),
+          onClick: ({ domEvent }: { domEvent: SyntheticEvent }) =>
+            onDownloadImage(domEvent),
         },
       ];
 

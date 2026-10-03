@@ -35,9 +35,13 @@ const StyledTree = styled(Tree)`
   }
 `;
 
+export type ScopingFormValues = {
+  scope: NativeFilterScope & { selectedLayers?: string[] };
+};
+
 type ScopingTreeProps = {
   forceUpdate: Function;
-  updateFormValues: (values: any) => void;
+  updateFormValues: (values: ScopingFormValues) => void;
   formScope?: NativeFilterScope;
   initialScope: NativeFilterScope;
   chartId?: number;
@@ -134,7 +138,7 @@ const createFormValues = (
   scope: NativeFilterScope,
   layerKeys: string[],
   chartId?: number,
-): { scope: NativeFilterScope & { selectedLayers?: string[] } } => {
+): ScopingFormValues => {
   const finalScope = { ...scope };
   if (chartId !== undefined) {
     finalScope.excluded = [...new Set([...finalScope.excluded, chartId])];

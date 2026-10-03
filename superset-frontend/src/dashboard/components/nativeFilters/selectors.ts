@@ -26,6 +26,7 @@ import {
   getColumnLabel,
   NativeFilterType,
   NO_TIME_RANGE,
+  QueryData,
   QueryFormColumn,
 } from '@superset-ui/core';
 import { TIME_FILTER_MAP } from 'src/explore/constants';
@@ -50,10 +51,23 @@ type Datasource = {
   verbose_map?: Record<string, string>;
 };
 
+type ChartQueryFilters =
+  | {
+      queriesResponse?:
+        | Pick<QueryData, 'applied_filters' | 'rejected_filters'>[]
+        | null;
+    }
+  | null
+  | undefined;
+
 type Filter = {
   chartId: number;
   columns: { [key: string]: string | string[] };
-  scopes: { [key: string]: any };
+  scopes: {
+    [key: string]: Parameters<
+      typeof getChartIdsInFilterScope
+    >[0]['filterScope'];
+  };
   labels: { [key: string]: string };
   isDateFilter: boolean;
   directPathToFilter: string[];
@@ -78,7 +92,7 @@ const selectIndicatorValue = (
   columnKey: string,
   filter: Filter,
   datasource: Datasource,
-): any => {
+): string[] => {
   const values = filter.columns[columnKey];
   const arrValues = Array.isArray(values) ? values : [values];
 
@@ -142,7 +156,7 @@ const selectIndicatorsForChartFromFilter = (
 };
 
 const getQueryFilterMetadata = (
-  chart: any,
+  chart: ChartQueryFilters,
   metadataKey: 'applied_filters' | 'rejected_filters',
 ) =>
   ensureIsArray(chart?.queriesResponse).flatMap(
@@ -152,10 +166,10 @@ const getQueryFilterMetadata = (
         : queryResponse?.rejected_filters) || [],
   );
 
-const getAppliedColumns = (chart: any): Set<string> =>
+const getAppliedColumns = (chart: ChartQueryFilters): Set<string> =>
   new Set(
     getQueryFilterMetadata(chart, 'applied_filters').map(
-      (filter: any) => filter.column,
+      filter => filter.column,
     ),
   );
 
@@ -166,7 +180,7 @@ const getAppliedColumns = (chart: any): Set<string> =>
  * applied_filter_columns populated.
  */
 export const getAppliedColumnsWithFallback = (
-  chart: any,
+  chart: ChartQueryFilters,
   nativeFilters?: Filters,
   dataMask?: DataMaskStateWithId,
   chartId?: number,
@@ -174,7 +188,7 @@ export const getAppliedColumnsWithFallback = (
   // First try to get from query response (preferred source of truth)
   const queryAppliedFilters = getQueryFilterMetadata(chart, 'applied_filters');
   if (queryAppliedFilters.length > 0) {
-    return new Set(queryAppliedFilters.map((filter: any) => filter.column));
+    return new Set(queryAppliedFilters.map(filter => filter.column));
   }
 
   // Fallback: derive from native filters and dataMask when query response is empty
@@ -199,9 +213,9 @@ export const getAppliedColumnsWithFallback = (
   return new Set<string>();
 };
 
-const getRejectedColumns = (chart: any): Set<string> =>
+const getRejectedColumns = (chart: ChartQueryFilters): Set<string> =>
   new Set(
-    getQueryFilterMetadata(chart, 'rejected_filters').map((filter: any) =>
+    getQueryFilterMetadata(chart, 'rejected_filters').map(filter =>
       getColumnLabel(filter.column),
     ),
   );
@@ -209,7 +223,7 @@ const getRejectedColumns = (chart: any): Set<string> =>
 export type Indicator = {
   column?: QueryFormColumn;
   name: string;
-  value?: any;
+  value?: string | string[] | null;
   status?: IndicatorStatus;
   path?: string[];
   customColumnLabel?: string;
@@ -234,7 +248,7 @@ export const getCrossFilterIndicator = (
     layoutItem => layoutItem?.meta?.chartId === chartId,
   );
 
-  const filterObject: Indicator = {
+  const filterObject: Indicator & { value: string | null } = {
     column,
     name:
       chartLayoutItem?.meta?.sliceNameOverride ||
@@ -262,7 +276,7 @@ export const selectIndicatorsForChart = (
   chartId: number,
   filters: { [key: number]: Filter },
   datasources: { [key: string]: Datasource },
-  chart: any,
+  chart: ChartQueryFilters,
 ): Indicator[] => {
   // for now we only need to know which columns are compatible/incompatible,
   // so grab the columns from the applied/rejected filters
@@ -403,7 +417,7 @@ export const selectNativeIndicatorsForChart = (
   nativeFilters: Filters,
   dataMask: DataMaskStateWithId,
   chartId: number,
-  chart: any,
+  chart: ChartQueryFilters,
   chartLayoutItems: LayoutItem[],
   chartConfiguration: ChartConfiguration = defaultChartConfig,
 ): Indicator[] => {
