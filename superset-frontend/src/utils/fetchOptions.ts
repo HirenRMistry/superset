@@ -22,17 +22,17 @@ import { SupersetClient } from '@superset-ui/core';
 import rison from 'rison';
 import { Dispatch, SetStateAction } from 'react';
 
-interface FetchPaginatedOptions {
+interface FetchPaginatedOptions<TItem, TResult> {
   endpoint: string;
   pageSize?: number;
-  setData: (data: any[]) => void;
+  setData: (data: TResult[]) => void;
   setLoadingState: Dispatch<SetStateAction<any>>;
   filters?: SupersetFilter[];
   orderBy?: { column: string; direction: 'asc' | 'desc' };
   loadingKey: string;
   addDangerToast: (message: string) => void;
   errorMessage?: string;
-  mapResult?: (item: any) => any;
+  mapResult?: (item: TItem) => TResult;
 }
 
 interface QueryObj {
@@ -49,7 +49,7 @@ interface SupersetFilter {
   value: string | number | (string | number)[];
 }
 
-export const fetchPaginatedData = async ({
+export const fetchPaginatedData = async <TItem, TResult = TItem>({
   endpoint,
   pageSize = 100,
   setData,
@@ -59,8 +59,8 @@ export const fetchPaginatedData = async ({
   loadingKey,
   addDangerToast,
   errorMessage = 'Error while fetching data',
-  mapResult = (item: any) => item,
-}: FetchPaginatedOptions) => {
+  mapResult,
+}: FetchPaginatedOptions<TItem, TResult>) => {
   try {
     const fetchPage = async (pageIndex: number) => {
       const queryObj: QueryObj = {
@@ -80,9 +80,12 @@ export const fetchPaginatedData = async ({
         endpoint: `${endpoint}?q=${encodedQuery}`,
       });
 
+      const results: TResult[] = mapResult
+        ? response.json.result.map(mapResult)
+        : response.json.result;
       return {
         count: response.json.count,
-        results: response.json.result.map(mapResult),
+        results,
       };
     };
 

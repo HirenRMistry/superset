@@ -77,7 +77,10 @@ import {
 } from 'src/components';
 import SubMenu, { SubMenuProps } from 'src/features/home/SubMenu';
 import { Link, useHistory } from 'react-router-dom';
-import { dangerouslyGetItemDoNotUse } from 'src/utils/localStorageHelpers';
+import {
+  dangerouslyGetItemDoNotUse,
+  LegacyUserSettings,
+} from 'src/utils/localStorageHelpers';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import PropertiesModal from 'src/explore/components/PropertiesModal';
 import Chart from 'src/types/Chart';
@@ -333,9 +336,10 @@ function ChartList(props: ChartListProps) {
     () =>
       userId === undefined
         ? null
-        : (dangerouslyGetItemDoNotUse(userId.toString(), null) as {
-            thumbnails: boolean;
-          }),
+        : dangerouslyGetItemDoNotUse<LegacyUserSettings | null>(
+            userId.toString(),
+            null,
+          ),
     [userId],
   );
 

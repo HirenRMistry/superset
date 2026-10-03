@@ -20,7 +20,6 @@ import { nanoid } from 'nanoid';
 
 interface ObjectWithId {
   id?: string;
-  [key: string]: any;
 }
 
 interface StateWithObject {
@@ -77,7 +76,7 @@ export function alterInArr<T extends ObjectWithId>(
   return { ...state, [arrKey]: newArr };
 }
 
-export function removeFromArr<T extends ObjectWithId>(
+export function removeFromArr<T extends object>(
   state: StateWithArray,
   arrKey: string,
   obj: T,

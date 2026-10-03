@@ -40,7 +40,10 @@ import {
   type ListViewProps,
 } from 'src/components';
 import SubMenu, { SubMenuProps } from 'src/features/home/SubMenu';
-import { dangerouslyGetItemDoNotUse } from 'src/utils/localStorageHelpers';
+import {
+  dangerouslyGetItemDoNotUse,
+  LegacyUserSettings,
+} from 'src/utils/localStorageHelpers';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import { Icons } from '@superset-ui/core/components/Icons';
 import { Link } from 'react-router-dom';
@@ -105,7 +108,10 @@ function TagList(props: TagListProps) {
   );
 
   // TODO: Fix usage of localStorage keying on the user id
-  const userKey = dangerouslyGetItemDoNotUse(userId?.toString(), null);
+  const userKey = dangerouslyGetItemDoNotUse<LegacyUserSettings | null>(
+    userId?.toString(),
+    null,
+  );
 
   const canDelete = hasPerm('can_write');
   const canEdit = hasPerm('can_write');
