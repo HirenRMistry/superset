@@ -51,7 +51,7 @@ interface VerticalBarConfig {
   filtersOpen: boolean;
   height: number | string;
   offset: number;
-  toggleFiltersBar: any;
+  toggleFiltersBar: (open: boolean) => void;
   width: number;
   /**
    * Renders the bar for a mobile drawer: full-width, in normal document

@@ -17,7 +17,7 @@
  * under the License.
  */
 import { render, screen } from 'spec/helpers/testing-library';
-import { Filter } from '@superset-ui/core';
+import { Divider, Filter } from '@superset-ui/core';
 import { FiltersDropdownContent } from '.';
 
 const buildFilter = (id: string, name: string): Filter =>
@@ -35,7 +35,9 @@ const buildFilter = (id: string, name: string): Filter =>
 const baseProps = {
   overflowedCrossFilters: [],
   filtersInScope: [buildFilter('filter-1', 'In Scope Filter')],
-  renderer: (filter: any) => <div key={filter.id}>{filter.name}</div>,
+  renderer: (filter: Filter | Divider) => (
+    <div key={filter.id}>{filter.name}</div>
+  ),
   rendererCrossFilter: () => null,
   showCollapsePanel: true,
   forceRenderOutOfScope: false,

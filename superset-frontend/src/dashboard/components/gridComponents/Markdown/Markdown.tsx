@@ -35,7 +35,9 @@ import { Draggable } from 'src/dashboard/components/dnd/DragDroppable';
 import HoverMenu from 'src/dashboard/components/menu/HoverMenu';
 import ResizableContainer from 'src/dashboard/components/resizable/ResizableContainer';
 import MarkdownModeDropdown from 'src/dashboard/components/menu/MarkdownModeDropdown';
-import WithPopoverMenu from 'src/dashboard/components/menu/WithPopoverMenu';
+import WithPopoverMenu, {
+  type ShouldFocusEvent,
+} from 'src/dashboard/components/menu/WithPopoverMenu';
 import type { LayoutItem } from 'src/dashboard/types';
 import type { DropResult } from 'src/dashboard/components/dnd/dragDroppableConfig';
 import { ROW_TYPE, COLUMN_TYPE } from 'src/dashboard/util/componentTypes';
@@ -289,7 +291,7 @@ function Markdown({
 
   const shouldFocusMarkdown = useCallback(
     (
-      event: MouseEvent,
+      event: ShouldFocusEvent,
       container: HTMLElement | null,
       menuRef: HTMLElement | null,
     ): boolean => {

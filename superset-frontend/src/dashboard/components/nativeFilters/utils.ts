@@ -327,7 +327,7 @@ export function groupFiltersByTarget(
 }
 
 export function buildFilterScopesFromFilters(
-  filters: any,
+  filters: Record<string, Filter>,
 ): Record<string, string[]> {
   const filterScopes: Record<string, string[]> = {};
 

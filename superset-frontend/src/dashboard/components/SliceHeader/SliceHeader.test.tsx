@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { ComponentProps, MouseEventHandler } from 'react';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { getExtensionsRegistry, VizType } from '@superset-ui/core';
@@ -33,9 +34,23 @@ import { isEmbedded } from 'src/dashboard/util/isEmbedded';
 import { useUiConfig } from 'src/components/UiConfigContext';
 import SliceHeader from '.';
 
+type MockSliceHeaderControlsProps = Record<string, unknown> &
+  Partial<
+    Record<
+      | 'toggleExpandSlice'
+      | 'forceRefresh'
+      | 'logExploreChart'
+      | 'exportCSV'
+      | 'handleToggleFullSize'
+      | 'addSuccessToast'
+      | 'addDangerToast',
+      MouseEventHandler<HTMLButtonElement>
+    >
+  >;
+
 jest.mock('src/dashboard/components/SliceHeaderControls', () => ({
   __esModule: true,
-  default: (props: any) => (
+  default: (props: MockSliceHeaderControlsProps) => (
     <div
       data-test="SliceHeaderControls"
       data-slice={JSON.stringify(props.slice)}
@@ -106,7 +121,7 @@ jest.mock('src/dashboard/components/SliceHeaderControls', () => ({
 
 jest.mock('src/dashboard/components/FiltersBadge', () => ({
   __esModule: true,
-  default: (props: any) => (
+  default: (props: Record<string, unknown>) => (
     <div data-test="FiltersBadge" data-chart-id={props.chartId} />
   ),
 }));
@@ -149,8 +164,14 @@ const initialState = {
   dataMask: {},
 };
 
-const createProps = (overrides: any = {}) => ({
+type SliceHeaderProps = ComponentProps<typeof SliceHeader>;
+type PartialSliceHeaderProps = Partial<SliceHeaderProps> & {
+  innerRef?: unknown;
+};
+
+const createProps = (overrides: Record<string, unknown> = {}) => ({
   filters: {}, // is in typing but not being used
+  exploreUrl: '/explore/',
   editMode: false,
   annotationQuery: { param01: 'annotationQuery' } as any,
   annotationError: { param01: 'annotationError' } as any,
@@ -204,7 +225,11 @@ const createProps = (overrides: any = {}) => ({
   logExploreChart: jest.fn(),
   logEvent: jest.fn(),
   exportCSV: jest.fn(),
-  formData: { slice_id: 1, datasource: '58__table' },
+  formData: {
+    slice_id: 1,
+    datasource: '58__table',
+    viz_type: VizType.Bar,
+  },
   width: 100,
   height: 100,
   ...overrides,
@@ -233,7 +258,7 @@ test('Should expose a class hook, not just data-test, for fullscreen styling', (
 });
 
 test('Should render - default props', () => {
-  const props = createProps();
+  const props: PartialSliceHeaderProps = createProps();
 
   delete props.forceRefresh;
   delete props.updateSliceName;
@@ -252,7 +277,7 @@ test('Should render - default props', () => {
   delete props.supersetCanExplore;
   delete props.supersetCanDownload;
 
-  render(<SliceHeader {...props} />, {
+  render(<SliceHeader {...(props as SliceHeaderProps)} />, {
     useRedux: true,
     useRouter: true,
     initialState,
@@ -261,7 +286,7 @@ test('Should render - default props', () => {
 });
 
 test('Should render default props and "call" actions', async () => {
-  const props = createProps();
+  const props: PartialSliceHeaderProps = createProps();
 
   delete props.forceRefresh;
   delete props.updateSliceName;
@@ -280,7 +305,7 @@ test('Should render default props and "call" actions', async () => {
   delete props.supersetCanExplore;
   delete props.supersetCanDownload;
 
-  render(<SliceHeader {...props} />, {
+  render(<SliceHeader {...(props as SliceHeaderProps)} />, {
     useRedux: true,
     useRouter: true,
     initialState,

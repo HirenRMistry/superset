@@ -37,7 +37,7 @@ jest.mock('./ColumnSelect', () => ({
   ColumnSelect: ({
     filterValues,
   }: {
-    filterValues: (column: any) => boolean;
+    filterValues: (column: { name: string; filterable: boolean }) => boolean;
   }) => {
     const columns = [
       { name: 'col1', filterable: true },

@@ -63,7 +63,7 @@ const mockedProps = {
   onCancel: jest.fn(),
   onSave: jest.fn(),
 };
-function setup(overridesProps?: any) {
+function setup(overridesProps?: Record<string, unknown>) {
   return render(<FiltersConfigModal {...mockedProps} {...overridesProps} />, {
     useDnd: true,
     useRedux: true,

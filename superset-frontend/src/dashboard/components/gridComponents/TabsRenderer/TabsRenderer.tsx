@@ -33,7 +33,7 @@ import {
   LineEditableTabs,
   TabsProps as AntdTabsProps,
 } from '@superset-ui/core/components/Tabs';
-import type { DragEndEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import {
   DndContext,
   PointerSensor,
@@ -316,8 +316,8 @@ const TabsRenderer = memo<TabsRendererProps>(
       activationConstraint: { distance: 10 },
     });
 
-    const onDragStart = useCallback((event: any) => {
-      setActiveId(event.active.id);
+    const onDragStart = useCallback((event: DragStartEvent) => {
+      setActiveId(String(event.active.id));
     }, []);
 
     const onDragEnd = useCallback(

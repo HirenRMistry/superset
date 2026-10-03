@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-let scrollTopDashboardInterval: any;
+let scrollTopDashboardInterval: ReturnType<typeof setInterval> | undefined;
 const SCROLL_STEP = 120;
 const INTERVAL_DELAY = 50;
 
@@ -34,7 +34,7 @@ export default function handleScroll(scroll: string | null) {
     scrollTopDashboardInterval = setInterval(() => {
       if (document.documentElement.scrollTop === 0) {
         clearInterval(scrollTopDashboardInterval);
-        scrollTopDashboardInterval = null;
+        scrollTopDashboardInterval = undefined;
         return;
       }
 
@@ -49,6 +49,6 @@ export default function handleScroll(scroll: string | null) {
     }, INTERVAL_DELAY);
   } else if (clearScroll) {
     clearInterval(scrollTopDashboardInterval);
-    scrollTopDashboardInterval = null;
+    scrollTopDashboardInterval = undefined;
   }
 }

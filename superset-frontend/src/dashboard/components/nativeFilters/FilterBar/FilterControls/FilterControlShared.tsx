@@ -22,6 +22,7 @@ import { styled, SupersetTheme } from '@apache-superset/core/theme';
 import { t } from '@apache-superset/core/translation';
 import {
   FormItem as StyledFormItem,
+  type FormItemProps,
   Form,
   Icons,
   Tooltip,
@@ -276,7 +277,7 @@ export const useFilterControlDisplay = (
       if (overflow) {
         return {
           FilterControlContainer: HorizontalOverflowFilterControlContainer,
-          FormItem: (props: any) => (
+          FormItem: (props: FormItemProps) => (
             <HorizontalOverflowFormItem
               {...props}
               inverseSelection={inverseSelection}
@@ -288,7 +289,7 @@ export const useFilterControlDisplay = (
       }
       return {
         FilterControlContainer: HorizontalFilterControlContainer,
-        FormItem: (props: any) => (
+        FormItem: (props: FormItemProps) => (
           <HorizontalFormItem {...props} inverseSelection={inverseSelection} />
         ),
         FilterControlTitleBox: HorizontalFilterControlTitleBox,
@@ -297,7 +298,7 @@ export const useFilterControlDisplay = (
     }
     return {
       FilterControlContainer: VerticalFilterControlContainer,
-      FormItem: (props: any) => (
+      FormItem: (props: FormItemProps) => (
         <VerticalFormItem {...props} inverseSelection={inverseSelection} />
       ),
       FilterControlTitleBox: VerticalFilterControlTitleBox,
