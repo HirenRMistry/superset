@@ -25,7 +25,12 @@ import {
 } from '@superset-ui/core';
 import { Alert } from '@apache-superset/core/components';
 import { styled } from '@apache-superset/core/theme';
-import { Button, Select, Switch } from '@superset-ui/core/components';
+import {
+  Button,
+  Select,
+  Switch,
+  type SelectValue,
+} from '@superset-ui/core/components';
 import { EditorHost } from 'src/core/editors';
 import rison from 'rison';
 import ColorSchemeSelect from 'src/dashboard/components/ColorSchemeSelect';
@@ -88,7 +93,7 @@ interface StylingSectionProps {
   customCss: string;
   hasCustomLabelsColor: boolean;
   showChartTimestamps: boolean;
-  onThemeChange: (value: any) => void;
+  onThemeChange: (value: SelectValue) => void;
   onColorSchemeChange: (
     colorScheme: string,
     options?: { updateMetadata?: boolean },

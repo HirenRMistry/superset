@@ -55,7 +55,11 @@ type SaveModalProps = {
   customCss: string;
   colorNamespace?: string;
   colorScheme?: string;
-  onSave: (data: any, id: number | string, saveType: SaveType) => void;
+  onSave: (
+    data: Record<string, unknown>,
+    id: number | string,
+    saveType: SaveType,
+  ) => void;
   canOverwrite: boolean;
   shouldPersistRefreshFrequency: boolean;
   refreshFrequency: number;

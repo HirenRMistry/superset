@@ -40,12 +40,12 @@ export interface NativeFiltersFormItem {
   };
   column: string;
   controlValues: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
   requiredFirst: {
     [key: string]: boolean;
   };
-  defaultValue: any;
+  defaultValue: unknown;
   defaultDataMask: DataMask;
   dependencies?: string[];
   sortMetric: string | null;
@@ -79,12 +79,12 @@ export interface ChartCustomizationsFormItem {
   };
   column: string;
   controlValues: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
   requiredFirst: {
     [key: string]: boolean;
   };
-  defaultValue: any;
+  defaultValue: unknown;
   defaultDataMask: DataMask;
   dependencies?: string[];
   sortMetric: string | null;

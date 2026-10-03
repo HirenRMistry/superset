@@ -21,12 +21,15 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { NativeFilterScope } from '@superset-ui/core';
 import { styled } from '@apache-superset/core/theme';
 import { FormItem } from '@superset-ui/core/components';
-import ScopingTree from './ScopingTree';
+import ScopingTree, { ScopingFormValues } from './ScopingTree';
 import { getDefaultScopeValue } from './utils';
 
 type FilterScopeProps = {
   pathToFormValue?: string[];
-  updateFormValues: (values: any, triggerFormChange?: boolean) => void;
+  updateFormValues: (
+    values: Record<string, unknown>,
+    triggerFormChange?: boolean,
+  ) => void;
   formFilterScope?: NativeFilterScope;
   forceUpdate: Function;
   filterScope?: NativeFilterScope;
@@ -63,7 +66,7 @@ const FilterScope: FC<FilterScopeProps> = ({
   const [hasScopeBeenModified, setHasScopeBeenModified] = useState(false);
 
   const onUpdateFormValues = useCallback(
-    (formValues: any) => {
+    (formValues: ScopingFormValues) => {
       updateFormValues(formValues);
       setHasScopeBeenModified(true);
     },

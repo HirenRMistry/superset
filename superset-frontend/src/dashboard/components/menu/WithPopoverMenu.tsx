@@ -24,10 +24,15 @@ import {
   useRef,
   useState,
   memo,
+  SyntheticEvent,
 } from 'react';
 import cx from 'classnames';
 import { addAlpha } from '@superset-ui/core';
 import { css, styled } from '@apache-superset/core/theme';
+
+export type ShouldFocusEvent = (Event | SyntheticEvent) & {
+  target: EventTarget & HTMLElement;
+};
 
 type ShouldFocusContainer = HTMLDivElement & {
   contains: (event_target: EventTarget & HTMLElement) => boolean;
@@ -39,11 +44,10 @@ interface WithPopoverMenuProps {
   menuItems?: ReactNode[];
   onChangeFocus?: ((focus: boolean) => void) | null;
   isFocused?: boolean;
-  // Event argument is left as "any" because of the clash. In props it seems
-  // like it should be React.FocusEvent<>, however from handleClick() we can also
-  // derive that type is EventListenerOrEventListenerObject.
+  // Receives either a React synthetic event (container onClick) or a native
+  // event (document click/drag listeners).
   shouldFocus?: (
-    event: any,
+    event: ShouldFocusEvent,
     container: ShouldFocusContainer | null,
     menuRef: HTMLDivElement | null,
   ) => boolean;
@@ -52,7 +56,7 @@ interface WithPopoverMenuProps {
 }
 
 const defaultShouldFocus = (
-  event: any,
+  event: ShouldFocusEvent,
   container: ShouldFocusContainer | null,
   menuRef: HTMLDivElement | null,
 ): boolean => {
@@ -139,19 +143,19 @@ function WithPopoverMenu({
   const focusEventRef = useRef<Event | null>(null);
 
   const handleClick = useCallback(
-    (event: any) => {
+    (event: Event | SyntheticEvent) => {
       if (!editMode) {
         return;
       }
 
-      const nativeEvent = event.nativeEvent || event;
+      const nativeEvent = 'nativeEvent' in event ? event.nativeEvent : event;
       if (focusEventRef.current === nativeEvent) {
         focusEventRef.current = null;
         return;
       }
 
       const shouldFocusResult = shouldFocusFunc(
-        event,
+        event as ShouldFocusEvent,
         containerRef.current,
         menuRef.current,
       );

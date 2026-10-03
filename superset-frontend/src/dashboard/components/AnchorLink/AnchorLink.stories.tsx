@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import AnchorLink from '.';
+import AnchorLink, { AnchorLinkProps } from '.';
 
 export default {
   title: 'Components/AnchorLink',
   component: AnchorLink,
 };
 
-export const InteractiveAnchorLink = (args: any) => (
+export const InteractiveAnchorLink = (args: Omit<AnchorLinkProps, 'id'>) => (
   <AnchorLink id="link" {...args} />
 );
 
