@@ -17,6 +17,7 @@
  * under the License.
  */
 import fetchMock from 'fetch-mock';
+import { AnyAction } from 'redux';
 import {
   addReport,
   editReport,
@@ -42,11 +43,11 @@ test('addReport dispatches ADD_REPORT and success toast on success', async () =>
 
   await addReport({ name: 'New Report' })(dispatch);
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).toContain(ADD_REPORT);
   expect(types).toContain('ADD_TOAST');
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('SUCCESS_TOAST');
 });
@@ -59,11 +60,11 @@ test('addReport dispatches danger toast on failure and rejects', async () => {
     addReport({ name: 'Bad Report' })(dispatch),
   ).rejects.toBeDefined();
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).not.toContain(ADD_REPORT);
   expect(types).toContain('ADD_TOAST');
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('DANGER_TOAST');
 });
@@ -75,11 +76,11 @@ test('editReport dispatches EDIT_REPORT and success toast on success', async () 
 
   await editReport(5, { name: 'Updated Report' })(dispatch);
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).toContain(EDIT_REPORT);
   expect(types).toContain('ADD_TOAST');
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('SUCCESS_TOAST');
 });
@@ -92,10 +93,10 @@ test('editReport dispatches danger toast on failure and rejects', async () => {
     editReport(5, { name: 'Bad Update' })(dispatch),
   ).rejects.toBeDefined();
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).not.toContain(EDIT_REPORT);
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('DANGER_TOAST');
 });
@@ -112,11 +113,11 @@ test('deleteActiveReport dispatches DELETE_REPORT and success toast on success',
 
   await deleteActiveReport(report)(dispatch);
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).toContain(DELETE_REPORT);
   expect(types).toContain('ADD_TOAST');
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('SUCCESS_TOAST');
 });
@@ -128,10 +129,10 @@ test('deleteActiveReport dispatches danger toast on failure', async () => {
 
   await deleteActiveReport(report)(dispatch);
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).not.toContain(DELETE_REPORT);
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('DANGER_TOAST');
 });
@@ -149,7 +150,7 @@ test('fetchUISpecificReport dispatches SET_REPORT on success', async () => {
   })(dispatch);
 
   const setAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === SET_REPORT,
+    ([a]: AnyAction[]) => a.type === SET_REPORT,
   )?.[0];
   expect(setAction).toBeDefined();
   expect(setAction.resourceId).toBe(42);
@@ -168,11 +169,11 @@ test('fetchUISpecificReport dispatches danger toast on failure', async () => {
     resourceId: 10,
   })(dispatch);
 
-  const types = dispatch.mock.calls.map(([action]: any) => action.type);
+  const types = dispatch.mock.calls.map(([action]: AnyAction[]) => action.type);
   expect(types).not.toContain(SET_REPORT);
   expect(types).toContain('ADD_TOAST');
   const toastAction = dispatch.mock.calls.find(
-    ([a]: any) => a.type === 'ADD_TOAST',
+    ([a]: AnyAction[]) => a.type === 'ADD_TOAST',
   )?.[0];
   expect(toastAction.payload.toastType).toBe('DANGER_TOAST');
 });
