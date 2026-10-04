@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import fetchMock from 'fetch-mock';
+import fetchMock, { type CallLog } from 'fetch-mock';
 import { mockUserSubjectsBootstrapData } from 'spec/helpers/mockBootstrapData';
 import { fireEvent, screen, waitFor } from 'spec/helpers/testing-library';
 import userEvent from '@testing-library/user-event';
@@ -142,9 +142,8 @@ test('can unfavorite a dashboard', async () => {
   });
   global.URL.createObjectURL = jest.fn();
   fetchMock.get('/thumbnail', { body: new Blob(), sendAsJson: false });
-  fetchMock.get('glob:*', (callLog: any) => {
-    const reqUrl =
-      typeof callLog === 'string' ? callLog : callLog?.url || callLog;
+  fetchMock.get('glob:*', (callLog: CallLog) => {
+    const reqUrl = callLog.url;
     throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
   });
 
@@ -280,9 +279,8 @@ test('can edit dashboard title via properties modal', async () => {
   fetchMock.get('glob:*/api/v1/theme/*', { result: [] });
 
   // Catch-all must be last — fail hard on unmatched URLs
-  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: any) => {
-    const reqUrl =
-      typeof callLog === 'string' ? callLog : callLog?.url || callLog;
+  fetchMock.get(API_ENDPOINTS.CATCH_ALL, (callLog: CallLog) => {
+    const reqUrl = callLog.url;
     throw new Error(`[fetchMock catch-all] Unmatched GET: ${reqUrl}`);
   });
 
