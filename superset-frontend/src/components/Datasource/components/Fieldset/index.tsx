@@ -54,7 +54,7 @@ export default function Fieldset({
   }, [item]);
 
   const handleChange = useCallback(
-    (fieldKey: fieldKeyType, val: any) => {
+    (fieldKey: fieldKeyType, val: unknown) => {
       const updatedItem = {
         ...itemRef.current,
         [fieldKey]: val,

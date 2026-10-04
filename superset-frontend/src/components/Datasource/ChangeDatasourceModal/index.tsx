@@ -26,7 +26,11 @@ import {
 } from 'react';
 
 import { t } from '@apache-superset/core/translation';
-import { SupersetClient, getClientErrorObject } from '@superset-ui/core';
+import {
+  SupersetClient,
+  getClientErrorObject,
+  type ClientErrorObject,
+} from '@superset-ui/core';
 import { Alert } from '@apache-superset/core/components';
 import { styled } from '@apache-superset/core/theme';
 import {
@@ -109,7 +113,8 @@ const ChangeDatasourceModal: FunctionComponent<ChangeDatasourceModalProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [sortBy, setSortBy] = useState<SortByType>(DATASET_SORT_BY);
   const [confirmChange, setConfirmChange] = useState(false);
-  const [confirmedDataset, setConfirmedDataset] = useState<Datasource>();
+  const [confirmedDataset, setConfirmedDataset] =
+    useState<Pick<Datasource, 'type' | 'id'>>();
   const searchRef = useRef<InputRef>(null);
 
   const {
@@ -121,10 +126,13 @@ const ChangeDatasourceModal: FunctionComponent<ChangeDatasourceModalProps> = ({
     addDangerToast,
   );
 
-  const selectDatasource = useCallback((datasource: Datasource) => {
-    setConfirmChange(true);
-    setConfirmedDataset(datasource);
-  }, []);
+  const selectDatasource = useCallback(
+    (datasource: Pick<Datasource, 'type' | 'id'>) => {
+      setConfirmChange(true);
+      setConfirmedDataset(datasource);
+    },
+    [],
+  );
 
   const fetchDatasetPayload = {
     pageIndex,
@@ -189,11 +197,8 @@ const ChangeDatasourceModal: FunctionComponent<ChangeDatasourceModalProps> = ({
       addSuccessToast(t('Successfully changed %s!', datasetLabelLower()));
     } catch (response) {
       getClientErrorObject(response).then(
-        ({ error, message }: { error: any; message: string }) => {
-          const errorMessage = error
-            ? error.error || error.statusText || error
-            : message;
-          addDangerToast(errorMessage);
+        ({ error, message }: ClientErrorObject) => {
+          addDangerToast(error || message || '');
         },
       );
     }
@@ -205,7 +210,7 @@ const ChangeDatasourceModal: FunctionComponent<ChangeDatasourceModalProps> = ({
 
   const columns = [
     {
-      Cell: ({ row: { original } }: any) => (
+      Cell: ({ row: { original } }: { row: { original: Dataset } }) => (
         <StyledSpan
           type="button"
           data-test="datasource-link"
@@ -240,7 +245,9 @@ const ChangeDatasourceModal: FunctionComponent<ChangeDatasourceModalProps> = ({
         row: {
           original: { editors = [] },
         },
-      }: any) => <SubjectPile subjects={editors} />,
+      }: {
+        row: { original: Dataset };
+      }) => <SubjectPile subjects={editors} />,
       Header: t('Editors'),
       id: 'editors',
       disableSortBy: true,
